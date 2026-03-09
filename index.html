@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛸 Adventures of an Alien Baby</title>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090716; --surface: #12102a; --surface2: #1c1838; --surface3: #251f48;
+      --green: #39ff14; --green-dim: #2bc40f; --yellow: #ffd93d; --pink: #ff6b9d;
+      --blue: #4cc9f0; --purple: #c77dff; --orange: #ff9f43; --teal: #55efc4;
+      --text: #e8e0ff; --text-dim: #8880bb;
+      --border: rgba(99,88,200,0.25); --border2: rgba(99,88,200,0.45);
+      --shadow: 0 8px 40px rgba(0,0,0,0.6); --radius: 18px; --radius-sm: 10px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Nunito', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
+    #star-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    #app { position: relative; z-index: 1; max-width: 920px; margin: 0 auto; padding: 20px 20px 60px; min-height: 100vh; }
+
+    /* ── Progress Bar ── */
+    #progress-wrap { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 16px 0 36px; }
+    .pdot { position: relative; width: 38px; height: 38px; border-radius: 50%; border: 2px solid var(--border2); background: var(--surface2); display: flex; align-items: center; justify-content: center; font-size: .75rem; font-weight: 800; font-family: 'Baloo 2',sans-serif; color: var(--text-dim); transition: all .4s; cursor: default; }
+    .pdot.done { background: rgba(57,255,20,0.15); border-color: var(--green); color: var(--green); }
+    .pdot.active { background: rgba(255,217,61,0.15); border-color: var(--yellow); color: var(--yellow); transform: scale(1.15); box-shadow: 0 0 18px rgba(255,217,61,0.4); }
+    .pdot-line { flex: 1; max-width: 40px; height: 2px; background: var(--border); border-radius: 2px; }
+    .pdot-label { position: absolute; top: calc(100% + 6px); left: 50%; transform: translateX(-50%); font-size: .62rem; white-space: nowrap; color: var(--text-dim); font-family: 'Nunito',sans-serif; }
+    .pdot.active .pdot-label { color: var(--yellow); }
+    .pdot.done   .pdot-label { color: var(--green); }
+
+    /* ── Pages ── */
+    .page { display: none; animation: fadeUp .5s ease both; }
+    .page.active { display: block; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(28px); } to { opacity:1; transform:none; } }
+
+    /* ── Cards ── */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 26px; margin-bottom: 18px; box-shadow: var(--shadow); }
+
+    /* ── Typography ── */
+    h1, h2, h3, h4 { font-family: 'Baloo 2',sans-serif; }
+    h1 { font-size: 2.1rem; font-weight: 800; background: linear-gradient(120deg, var(--green) 0%, var(--blue) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; }
+    h2 { font-size: 1.55rem; font-weight: 700; color: var(--yellow); margin-bottom: 10px; }
+    h3 { font-size: 1.15rem; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+    h4 { font-size: .95rem; font-weight: 700; color: var(--text-dim); margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+    .story { font-size: 1.05rem; line-height: 1.85; color: var(--text); margin-bottom: 14px; }
+    .story em { color: var(--yellow); font-style: normal; font-weight: 700; }
+    .story b  { color: var(--green); }
+
+    /* ── Inputs ── */
+    .text-input { background: var(--surface2); border: 2px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-family: 'Baloo 2',sans-serif; font-size: 1.5rem; font-weight: 700; padding: 12px 18px; width: 100%; outline: none; transition: border-color .2s, box-shadow .2s; }
+    .text-input:focus { border-color: var(--green); box-shadow: 0 0 16px rgba(57,255,20,0.2); }
+    .text-input::placeholder { color: var(--text-dim); font-weight: 400; font-size: 1.1rem; }
+    .sel { background: var(--surface2); border: 2px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-family: 'Nunito',sans-serif; font-size: 1rem; font-weight: 600; padding: 10px 36px 10px 14px; width: 100%; outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%238880bb' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; transition: border-color .2s; }
+    .sel:focus { border-color: var(--blue); }
+    .sel option { background: #1c1838; }
+
+    /* ── Multi-select ── */
+    .ms { position: relative; }
+    .ms-trigger { background: var(--surface2); border: 2px solid var(--border2); border-radius: var(--radius-sm); color: var(--text); font-family: 'Nunito',sans-serif; font-size: 1rem; padding: 8px 36px 8px 12px; width: 100%; cursor: pointer; min-height: 48px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='9'%3E%3Cpath d='M1 1l6 6 6-6' stroke='%238880bb' stroke-width='2.2' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; transition: border-color .2s; user-select: none; }
+    .ms-trigger.open, .ms-trigger:hover { border-color: var(--blue); }
+    .ms-tag { display: inline-flex; align-items: center; gap: 4px; background: rgba(76,201,240,0.18); border: 1px solid rgba(76,201,240,0.4); border-radius: 20px; padding: 2px 10px; font-size: .82rem; color: var(--blue); font-weight: 700; }
+    .ms-tag .rx { cursor: pointer; opacity: .6; font-size: .9rem; margin-left: 2px; }
+    .ms-tag .rx:hover { opacity: 1; }
+    .ms-ph { color: var(--text-dim); font-size: .9rem; }
+    .ms-drop { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: var(--surface2); border: 1px solid var(--border2); border-radius: var(--radius-sm); box-shadow: var(--shadow); z-index: 120; max-height: 220px; overflow-y: auto; display: none; }
+    .ms-drop.open { display: block; }
+    .ms-opt { display: flex; align-items: center; gap: 10px; padding: 10px 14px; cursor: pointer; font-size: .93rem; transition: background .15s; }
+    .ms-opt:hover { background: rgba(255,255,255,.04); }
+    .ms-opt.sel2 { background: rgba(76,201,240,.08); color: var(--blue); }
+    .ms-cb { width: 18px; height: 18px; border-radius: 5px; border: 2px solid var(--border2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: .7rem; transition: all .15s; }
+    .ms-opt.sel2 .ms-cb { background: var(--blue); border-color: var(--blue); color: #0a0820; }
+
+    /* ── Buttons ── */
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 22px; border-radius: 50px; border: none; cursor: pointer; font-family: 'Baloo 2',sans-serif; font-size: .97rem; font-weight: 700; transition: all .2s; }
+    .btn-primary { background: linear-gradient(135deg, var(--green) 0%, #00d4aa 100%); color: #080616; box-shadow: 0 4px 20px rgba(57,255,20,.25); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 28px rgba(57,255,20,.45); }
+    .btn-primary:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+    .btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border2); }
+    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
+    .btn-sm { padding: 6px 14px; font-size: .82rem; }
+    .nav { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; }
+    .fg { margin-bottom: 18px; }
+    .fg label { display: block; font-weight: 700; margin-bottom: 8px; font-size: .93rem; }
+
+    /* ── Two-column layout ── */
+    .two-col { display: grid; grid-template-columns: 1fr 220px; gap: 22px; align-items: start; }
+    @media (max-width: 620px) { .two-col { grid-template-columns: 1fr; } }
+
+    /* ── Sandwich preview ── */
+    .sw-preview { background: var(--surface2); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; text-align: center; position: sticky; top: 20px; }
+    .sw-title { font-family: 'Baloo 2',sans-serif; font-size: .9rem; color: var(--text-dim); margin-bottom: 12px; }
+    .sw-layers { display: flex; flex-direction: column; gap: 4px; margin: 10px 0; }
+    .sw-layer { background: rgba(255,255,255,.04); border-radius: 7px; padding: 6px 10px; font-size: .88rem; display: flex; align-items: center; gap: 6px; animation: swin .3s ease both; }
+    @keyframes swin { from { opacity:0; transform:translateX(-10px); } to { opacity:1; transform:none; } }
+    .sw-empty { color: var(--text-dim); font-size: .85rem; padding: 20px; }
+
+    /* ── Algorithm builder ── */
+    .algo-wrap { display: grid; grid-template-columns: 1fr 250px; gap: 20px; }
+    @media (max-width: 680px) { .algo-wrap { grid-template-columns: 1fr; } }
+    .instr-card { background: var(--surface2); border: 1px solid var(--border); border-left: 4px solid var(--border2); border-radius: var(--radius-sm); padding: 11px 12px; display: flex; align-items: center; gap: 9px; cursor: grab; transition: all .18s; user-select: none; margin-bottom: 2px; }
+    .instr-card:active { cursor: grabbing; }
+    .instr-card.dragging { opacity: .4; transform: scale(.97); }
+    .instr-card.drag-over { border-color: var(--green) !important; background: rgba(57,255,20,.06); }
+    .drag-handle { color: var(--text-dim); font-size: 1rem; flex-shrink: 0; cursor: grab; padding: 0 2px; }
+    .instr-num { font-family: 'Baloo 2',sans-serif; font-size: .75rem; font-weight: 800; width: 22px; height: 22px; border-radius: 50%; background: rgba(255,255,255,.08); display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--text-dim); }
+    .instr-body { flex: 1; font-size: .92rem; }
+    .instr-action { font-weight: 700; color: var(--text); }
+    .instr-obj { color: var(--blue); }
+    .instr-controls { display: flex; gap: 3px; flex-shrink: 0; }
+    .ibt { width: 27px; height: 27px; border-radius: 7px; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: .82rem; transition: all .15s; }
+    .ibt:hover { transform: scale(1.12); }
+    .ibt-mv  { background: rgba(57,255,20,.12); color: var(--green); }
+    .ibt-del { background: rgba(255,107,107,.13); color: #ff6b6b; }
+
+    /* ── Insert row ── */
+    .ins-row { display: flex; align-items: center; gap: 6px; height: 22px; opacity: 0; transition: opacity .2s; }
+    .ins-row:hover { opacity: 1 !important; }
+    .ins-line { flex: 1; height: 1px; background: var(--border); }
+    .ins-btn { background: var(--surface2); border: 1px dashed var(--border2); border-radius: 20px; color: var(--text-dim); font-size: .75rem; padding: 1px 10px; cursor: pointer; white-space: nowrap; transition: all .15s; }
+    .ins-btn:hover { border-color: var(--green); color: var(--green); }
+
+    /* ── Modal ── */
+    .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(5,3,18,.82); z-index: 300; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .modal { background: var(--surface); border: 1px solid var(--border2); border-radius: var(--radius); padding: 26px; max-width: 500px; width: 100%; max-height: 82vh; overflow-y: auto; box-shadow: var(--shadow); animation: fadeUp .25s ease; }
+    .modal h3 { color: var(--yellow); margin-bottom: 16px; }
+    .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+    .action-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px,1fr)); gap: 8px; margin-bottom: 14px; }
+    .abt { background: var(--surface2); border: 2px solid var(--border2); border-radius: var(--radius-sm); padding: 10px 6px; cursor: pointer; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all .2s; font-family: 'Nunito',sans-serif; }
+    .abt:hover { border-color: var(--blue); background: rgba(76,201,240,.08); transform: translateY(-2px); }
+    .abt.picked { border-color: var(--yellow); background: rgba(255,217,61,.1); }
+    .abt .ai { font-size: 1.5rem; }
+    .abt .al { font-size: .78rem; font-weight: 700; color: var(--text-dim); }
+    .abt.picked .al { color: var(--yellow); }
+    .obj-row { display: flex; gap: 10px; margin-top: 12px; align-items: flex-end; }
+    .obj-row .fg { flex: 1; margin-bottom: 0; }
+
+    /* ── Hints & Validation ── */
+    .hint-box { background: rgba(255,217,61,.08); border: 1px solid rgba(255,217,61,.3); border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
+    .hint-ico { font-size: 1.4rem; flex-shrink: 0; }
+    .hint-txt { font-size: .88rem; color: var(--yellow); line-height: 1.55; }
+    .hint-txt b { color: #fff; }
+    .validation-ok { background: rgba(57,255,20,.08); border: 1px solid rgba(57,255,20,.3); border-radius: var(--radius-sm); padding: 12px 14px; color: var(--green); font-weight: 700; display: flex; align-items: center; gap: 8px; }
+
+    /* ── Sidebar ── */
+    .side-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; position: sticky; top: 20px; }
+    .chip { display: inline-flex; align-items: center; gap: 4px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; font-size: .78rem; margin: 2px; }
+    .step-badge { display: inline-flex; align-items: center; gap: 6px; background: rgba(76,201,240,.1); border: 1px solid rgba(76,201,240,.3); border-radius: 20px; padding: 4px 14px; font-size: .83rem; color: var(--blue); font-weight: 700; margin-bottom: 14px; }
+
+    /* ── Empty state ── */
+    .empty { text-align: center; padding: 36px; border: 2px dashed var(--border); border-radius: var(--radius); color: var(--text-dim); }
+    .empty .ei { font-size: 2.8rem; margin-bottom: 10px; }
+    .empty p { font-size: .9rem; }
+
+    /* ── Success page ── */
+    .success-wrap { text-align: center; padding: 30px 20px; }
+    .success-title { font-family: 'Baloo 2',sans-serif; font-size: 2.8rem; font-weight: 800; background: linear-gradient(120deg, var(--yellow), var(--orange)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 10px; animation: bounce 1.5s ease infinite; }
+    @keyframes bounce { 0%,100%{transform:scale(1)} 50%{transform:scale(1.06)} }
+    .confetti-piece { position: fixed; width: 9px; height: 9px; border-radius: 2px; pointer-events: none; animation: cfall linear forwards; }
+    @keyframes cfall { 0%{transform:translateY(-20px) rotate(0deg);opacity:1} 100%{transform:translateY(105vh) rotate(720deg);opacity:0} }
+
+    /* ── Alien reaction display (page 4) ── */
+    #pg4-alien-wrap { text-align: center; margin-bottom: 14px; transition: all .4s; }
+    #pg4-alien-wrap img, #pg4-alien-wrap svg { max-width: 120px; filter: drop-shadow(0 0 14px rgba(57,255,20,.3)); }
+
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 3px; }
+    @media print {
+      #star-canvas, #progress-wrap, .nav, .check-btns, .btn, .ibt, .ins-row, .drag-handle { display: none !important; }
+      body { background: white; color: black; }
+      .card { box-shadow: none; border: 1px solid #ccc; }
+      .instr-card { background: #f5f5f5; border-left: 4px solid #555; color: #111; }
+    }
+	
+	.ei {
+  -webkit-text-fill-color: initial;
+  background: none;
+  font-style: normal;
+}
+  </style>
+</head>
+<body>
+<canvas id="star-canvas"></canvas>
+<div id="app">
+  <div id="progress-wrap"></div>
+
+  <!-- ═══ PAGE 1: Find the alien ═══ -->
+  <div class="page active" id="pg1">
+    <div class="card">
+      <!-- The spaceship crash image: tries assets/spaceship.svg, then .png, then inline SVG -->
+      <div id="pg1-illus" style="text-align:center;margin-bottom:20px"></div>
+      <h1 id="pg1-heading"></h1>
+      <div id="pg1-story"></div>
+      <div class="fg" style="margin-top:18px">
+        <label id="pg1-name-label"></label>
+        <input class="text-input" id="alien-name-input" maxlength="20"
+               oninput="updateNamePreview()" id="alien-name-input">
+      </div>
+      <p id="name-preview" style="min-height:28px;font-family:'Baloo 2',sans-serif;font-size:1.1rem;color:var(--green);margin-top:8px;font-weight:700;"></p>
+      <div class="nav">
+        <button class="btn btn-primary" id="pg1-next" onclick="goPage(2)" disabled></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE 2: Welcome home ═══ -->
+  <div class="page" id="pg2">
+    <div class="card">
+      <!-- House + waving alien side by side -->
+      <div id="pg2-illus" style="display:flex;align-items:flex-end;justify-content:center;gap:20px;margin-bottom:18px;flex-wrap:wrap"></div>
+      <h2 id="pg2-heading"></h2>
+      <div id="pg2-story"></div>
+      <div class="card" style="background:var(--surface2);margin-top:6px">
+        <h3 id="pg2-box-heading"></h3>
+        <p class="story" id="pg2-box-text"></p>
+      </div>
+      <div class="nav">
+        <button class="btn btn-ghost" onclick="goPage(1)">← Back</button>
+        <button class="btn btn-primary" id="pg2-next" onclick="goPage(3)"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE 3: Choose sandwich ═══ -->
+  <div class="page" id="pg3">
+    <div class="card">
+      <!-- Kitchen scene + confused alien: alien has no idea what any of this is -->
+      <div id="pg3-illus" style="display:flex;align-items:flex-end;justify-content:center;gap:20px;margin-bottom:16px;flex-wrap:wrap"></div>
+      <h2 id="pg3-heading"></h2>
+      <p class="story" id="pg3-intro"></p>
+    </div>
+    <div class="two-col">
+      <div>
+        <div class="card">
+          <h3>🥪 Build Your Sandwich</h3>
+          <p style="font-size:.88rem;color:var(--text-dim);margin-bottom:16px">
+            Pick the ingredients — <span class="aname-span"></span> will need to find them all!
+          </p>
+          <div class="fg">
+            <label><span>🍞</span> Bread type <span style="color:#ff6b6b">*</span></label>
+            <select class="sel" id="sw-bread" onchange="updatePreview()">
+              <option value="">— Choose a bread —</option>
+              <option value="white">🍞 White Bread</option>
+              <option value="wheat">🌾 Whole Wheat Bread</option>
+              <option value="toast">🫓 Toast</option>
+              <option value="baguette">🥖 Baguette</option>
+              <option value="rye">🟤 Rye Bread</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label><span>🧈</span> Spreads / Sauces <span style="color:var(--text-dim)">(pick one or more)</span></label>
+            <div class="ms" id="ms-spreads">
+              <div class="ms-trigger" onclick="toggleMs('ms-spreads')">
+                <span class="ms-ph" id="ms-spreads-ph">— Choose spreads —</span>
+              </div>
+              <div class="ms-drop" id="ms-spreads-drop">
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','butter')"><div class="ms-cb">✓</div>🧈 Butter</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','peanut_butter')"><div class="ms-cb">✓</div>🥜 Peanut Butter</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','jam')"><div class="ms-cb">✓</div>🍓 Strawberry Jam</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','mayo')"><div class="ms-cb">✓</div>🥚 Mayonnaise</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','mustard')"><div class="ms-cb">✓</div>💛 Mustard</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','cream_cheese')"><div class="ms-cb">✓</div>🧀 Cream Cheese</div>
+              </div>
+            </div>
+          </div>
+          <div class="fg">
+            <label><span>🥩</span> Fillings <span style="color:var(--text-dim)">(pick one or more)</span></label>
+            <div class="ms" id="ms-fillings">
+              <div class="ms-trigger" onclick="toggleMs('ms-fillings')">
+                <span class="ms-ph" id="ms-fillings-ph">— Choose fillings —</span>
+              </div>
+              <div class="ms-drop" id="ms-fillings-drop">
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','ham')"><div class="ms-cb">✓</div>🥩 Ham</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','cheese')"><div class="ms-cb">✓</div>🧀 Cheese</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','tomato')"><div class="ms-cb">✓</div>🍅 Tomato</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','lettuce')"><div class="ms-cb">✓</div>🥬 Lettuce</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','cucumber')"><div class="ms-cb">✓</div>🥒 Cucumber</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','egg')"><div class="ms-cb">✓</div>🥚 Boiled Egg</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','salami')"><div class="ms-cb">✓</div>🍕 Salami</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','tuna')"><div class="ms-cb">✓</div>🐟 Tuna</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Live sandwich preview -->
+      <div>
+        <div class="sw-preview">
+          <div class="sw-title">Your sandwich so far:</div>
+          <div class="sw-layers" id="sw-layers"><p class="sw-empty">Nothing yet!</p></div>
+          <div style="font-size:3rem;margin-top:10px">🥪</div>
+        </div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="btn btn-ghost" onclick="goPage(2)">← Back</button>
+      <button class="btn btn-primary" id="pg3-next" onclick="goPage(4)" disabled></button>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE 4: Write the algorithm ═══ -->
+  <div class="page" id="pg4">
+    <div class="card">
+      <h2 id="pg4-heading"></h2>
+      <p class="story" id="pg4-intro"></p>
+      <div class="step-badge" id="step-badge">📋 0 steps written</div>
+    </div>
+    <div class="algo-wrap">
+      <div>
+        <div class="card" style="padding:18px">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <h3 style="margin:0">📋 Your Algorithm</h3>
+            <button class="btn btn-ghost btn-sm" onclick="clearAll()" style="font-size:.76rem;padding:5px 12px">🗑 Clear all</button>
+          </div>
+          <div id="instr-list"></div>
+          <div style="margin-top:8px">
+            <button class="btn btn-primary btn-sm" onclick="openModal(-1)">＋ Add a step</button>
+          </div>
+        </div>
+        <div id="hints-area"></div>
+        <div class="check-btns" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+          <button class="btn btn-ghost" onclick="runValidation()">🔍 Check my instructions!</button>
+          <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Print / Save</button>
+        </div>
+        <div class="nav" style="margin-top:20px">
+          <button class="btn btn-ghost" onclick="goPage(3)">← Back</button>
+          <button class="btn btn-primary" id="pg4-next" onclick="goPage(5)" disabled></button>
+        </div>
+      </div>
+      <!-- Sidebar with alien that reacts to validation -->
+      <div>
+        <div class="side-card">
+          <!-- The alien here updates: normal → confused (hints) → happy (passes) -->
+          <div id="pg4-alien-wrap"></div>
+          <h4 style="margin-bottom:10px">🥪 Your Sandwich</h4>
+          <div id="sidebar-sandwich"></div>
+          <div style="margin-top:16px">
+            <h4 style="margin-bottom:8px">💡 How to use:</h4>
+            <p class="sidebar-help-text" style="font-size:.78rem;color:var(--text-dim);line-height:1.55"></p>
+          </div>
+          <div style="margin-top:16px">
+            <h4 style="margin-bottom:8px">🧠 Remember:</h4>
+            <p class="sidebar-remember-text" style="font-size:.78rem;color:var(--text-dim);line-height:1.55"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ PAGE 5: Success ═══ -->
+  <div class="page" id="pg5">
+    <div class="success-wrap">
+      <!-- Eating alien — reacts to the completed sandwich -->
+      <div id="pg5-illus" style="margin-bottom:12px"></div>
+      <div class="success-title" id="pg5-heading"></div>
+      <div class="card" style="max-width:620px;margin:0 auto 24px">
+        <div id="pg5-story"></div>
+      </div>
+      <div class="card" style="max-width:620px;margin:0 auto 24px;background:var(--surface2)">
+        <h3 id="pg5-algo-title" style="margin-bottom:12px"></h3>
+        <div id="pg5-algo"></div>
+      </div>
+      <button class="btn btn-ghost" onclick="restartGame()" style="margin-top:10px">🔄 Start a new adventure!</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ Add/Edit step modal ═══ -->
+<div id="modal-bg" class="modal-bg" style="display:none" onclick="closeModalOnBg(event)">
+  <div class="modal">
+    <h3>➕ Add a Step</h3>
+    <p style="font-size:.86rem;color:var(--text-dim);margin-bottom:14px">
+      First pick what <b>action</b> to do, then choose the <b>object(s)</b>.
+    </p>
+    <h4 style="margin-bottom:8px">What action?</h4>
+    <div class="action-grid" id="action-grid"></div>
+    <div id="obj-area" style="display:none"></div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary btn-sm" id="modal-add-btn" onclick="confirmInstruction()" disabled>Add this step ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════
+  ● HTML formatting: <em>italic/yellow</em>, <b>bold/green</b>
+═════════════════════════════════════════════════════════════════════════ -->
+<script type="text/yaml" id="story-data">
+
+page1:
+  heading: "<span class='ei'>🛸</span> Something Has Landed!"
+  paragraphs:
+    - "\"Is that shooting star going to end up in our backyard?\" You look closely through the window and immediately run outside to investigate the strange light."
+    - "Soon, you realize it isn't a star at all, but a spaceship! Its hatch opens, and a confused little fellow starts looking around. It sees you waving."
+    - "You notice the little alien is scanning you with a device on its arm. \"Hey little buddy, what's your name?\" you ask gently."
+    - "The alien waits a few seconds, looking at its device. \"I'm <em>Baby ƸŧÞŤƍƜƾɮƢ</em>,\" it responds."
+    - "\"You can speak our language?\" you ask, barely holding back your excitement."
+    - "\"No, I am using this universal translator. It helps me understand and communicate with anyone across galaxies,\" the <em>baby alien</em> explains calmly."
+    - "\"Is it okay if I call you by an Earth name, since I can't pronounce your real name?\" you ask, hiding your shyness."
+  name_label: "✏️ Type your alien's name here:"
+  name_placeholder: "e.g. Zorp, Bleep, Nova…"
+  name_greeting: "👾 \"Yes, you can call me {name}!\" the baby alien giggles. It finds Earth names very funny."
+  next_button: "Take them inside! →"
+
+page2:
+  heading: "<span class='ei'>🏠</span> Welcome Home, <em>{name}</em>!"
+  paragraphs:
+    - "\"Are you visiting Earth?\" you ask <em>{name}</em>. \"I was traveling through your solar system and had to make an emergency landing. My ship needs to run its auto-repair procedure before I can continue my travel through the galaxies,\" <em>{name}</em> says, pointing at the pod."
+    - "\"Would you like to stay with us while your ship is getting repaired?\" you ask, inviting <em>{name}</em> inside."
+    - "<em>Baby {name}</em> has never been to Earth before. It doesn't know anything about our appliances, our food, or our rules. This is its <b>first</b> travel experience!"
+    - "While <em>{name}</em> looks around the house in wonder, you remember that you have school the next morning. You decide to teach <em>{name}</em> how to make your favorite sandwich, just in case <em>{name}</em> gets hungry while you're gone."
+  algorithm_box_heading: "🤔 Think about it:"
+  algorithm_box_text: "Imagine you had to explain how to make a sandwich to someone who had never seen a kitchen. <b>Every single step</b> needs to be explained. This is called writing an <b>algorithm</b>: a step-by-step set of instructions a computer (or an alien!) can follow exactly."
+  next_button: "Plan the sandwich! 🥪"
+
+page3:
+  heading: "<span class='ei'>🥪</span> Teach <em>{name}</em> to Make a Sandwich"
+  intro: "\"What's that?\" <em>{name}</em> asks. \"That's Humphrey Bobark, our pet dog,\" you respond. \"And what's that?\" <em>{name}</em> asks. \"That would be Mr. Fluff, our cat.\" You notice something important: to tell <em>{name}</em> how to make a sandwich, you need to be very thorough. You need to write a step-by-step guide!"
+  next_button: "Now write the instructions! 📋"
+
+page4:
+  heading: "<span class='ei'>📋</span> Write the <b>Algorithm</b> for <em>{name}</em>!"
+  intro: "You have chosen the sandwich. Now write the exact steps one at a time so <em>{name}</em> can follow them perfectly. Remember: <em>{name}</em> has never used a fridge or a knife before. Every tiny step matters!"
+  sidebar_help: "Click \"＋ Add a step\" to choose an action and its object. You can drag steps up or down to reorder them. Click 🔍 Check my instructions! to get helpful hints."
+  sidebar_remember: "An <b>algorithm</b> must be complete and in the right <b>order</b>. Every little step counts!"
+  validation_success: "✅ Great <b>algorithm</b>! <em>{name}</em> should be able to follow all those steps. Well done! <em>{name}</em> can now feed itself! 🥪"
+  next_button: "Feed the alien! 🚀"
+
+page5:
+  heading: "<span class='ei'>🎉</span> Amazing Work! <span class='ei'>🎉</span>"
+  paragraphs:
+    - "You left for school. <em>{name}</em> carefully read every single step of your <b>algorithm</b> and followed it perfectly."
+    - "When you came home, <em>{name}</em> was sitting at the kitchen table with the biggest smile. \"The <b>algorithm</b> worked!\" <em>{name}</em> beeped happily. 🛸🥪✨"
+  algo_title: "<span class='ei'>📋</span> <em>{name}</em>'s Sandwich <b>Algorithm</b>"
+
+hints:
+  section_title: "🛸 <em>{name}</em> has some questions about your <b>algorithm</b>:"
+  footer: "Fix the hints above, then check again!"
+  hands_not_washed:
+    icon: "🧼"
+    text: "Did <em>{name}</em> wash their hands before touching food? Try adding <b>Wash → 👐 hands</b> near the start."
+  fridge_not_closed:
+    icon: "🚪"
+    text: "Uh oh! The fridge is still open! Remember to add <b>Close → 🧊 fridge</b>."
+  fridge_not_opened:
+    icon: "🧊"
+    text: "The fridge was never opened! Add <b>Open → 🧊 fridge</b> before taking things out."
+  container_not_closed:
+    icon: "🫙"
+    text: "The {container} is still open! Add <b>Close → 🫙 {container}</b>!"
+  plate_not_taken:
+    icon: "🍽️"
+    text: "<em>{name}</em> needs a plate! Add <b>Take out → 🍽️ plate</b>."
+  bread_not_taken:
+    icon: "🍞"
+    text: "No bread? Add <b>Take out → 🍞 bread slice</b>."
+  spread_not_taken:
+    icon: "🤔"
+    text: "<b>First</b> add <b>Take out → {spread}</b>."
+  sandwich_not_closed:
+    icon: "🥪"
+    text: "The sandwich is still open! Add <b>Close sandwich</b> to finish it off."
+  nothing_put_back:
+    icon: "↩️"
+    text: "<em>{name}</em> should tidy up. Add some <b>Put back</b> steps!"
+
+</script>
+
+<!-- js-yaml: parses the YAML story block above. Loads from CDN (needs internet). -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-yaml/4.1.0/js-yaml.min.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+//  STORY SYSTEM
+//  STORY is the master text object. Loaded from the embedded YAML block
+//  on page load, then optionally overridden by an external story.yaml.
+// ═══════════════════════════════════════════════════════════════════════
+let STORY = {};
+
+// Get a single text value by dot-path (e.g. "page1.heading")
+// and substitute {name}, {container}, etc. from the vars object.
+function t(path, vars = {}) {
+  const keys = path.split('.');
+  let val = STORY;
+  for (const k of keys) {
+    if (val == null || typeof val !== 'object') return path;
+    val = val[k];
+  }
+  if (val === undefined || val === null) return path;
+  if (Array.isArray(val)) return val.map(s => applyVars(String(s), vars));
+  return applyVars(String(val), vars);
+}
+
+function applyVars(str, vars) {
+  return str.replace(/\{(\w+)\}/g, (_, k) => (vars[k] !== undefined ? vars[k] : `{${k}}`));
+}
+
+// Render an array of story paragraphs as HTML
+function renderParas(path, vars = {}) {
+  const arr = t(path, vars);
+  const list = Array.isArray(arr) ? arr : [arr];
+  return list.map(p => `<p class="story">${p}</p>`).join('');
+}
+
+// Deep-merge src into dst (used to merge external story.yaml over defaults)
+function deepMerge(dst, src) {
+  for (const key in src) {
+    if (src[key] && typeof src[key] === 'object' && !Array.isArray(src[key])) {
+      dst[key] = deepMerge(dst[key] || {}, src[key]);
+    } else {
+      dst[key] = src[key];
+    }
+  }
+  return dst;
+}
+
+async function loadStory() {
+  // Step 1: parse the embedded <script type="text/yaml"> block
+  const embedded = document.getElementById('story-data');
+  if (embedded && typeof jsyaml !== 'undefined') {
+    try {
+      STORY = jsyaml.load(embedded.textContent) || {};
+    } catch(e) {
+      console.error('Story YAML parse error (embedded):', e.message);
+      // Show a warning on screen so a teacher editing the YAML gets feedback
+      const warn = document.createElement('div');
+      warn.style.cssText = 'position:fixed;top:10px;left:50%;transform:translateX(-50%);background:#ff4444;color:white;padding:12px 20px;border-radius:8px;z-index:999;font-family:monospace;font-size:.85rem;max-width:90vw';
+      warn.textContent = '⚠️ YAML error in story-data block: ' + e.message;
+      document.body.appendChild(warn);
+    }
+  }
+
+  // Step 2: try to load an external story.yaml (works on GitHub Pages / any web server)
+  // If it exists, it overrides the embedded values above.
+  try {
+    const r = await fetch('story.yaml');
+    if (r.ok) {
+      const txt = await r.text();
+      const external = jsyaml.load(txt);
+      STORY = deepMerge(STORY, external);
+      console.log('story.yaml loaded and applied.');
+    }
+  } catch(e) {
+    // No external file — that's fine, we use the embedded block.
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  ASSET IMAGE SYSTEM
+// ═══════════════════════════════════════════════════════════════════════
+
+// Returns an <img> HTML string that auto-falls-back to inline SVG
+function img(name, maxWidth = '180px', extraStyle = '') {
+  return `<img
+    src="assets/${name}.svg"
+    onerror="tryAssetFallback(this,'${name}')"
+    style="max-width:${maxWidth};${extraStyle}"
+    alt="${name.replace(/-/g, ' ')}">`;
+}
+
+function tryAssetFallback(imgEl, name) {
+  if (!imgEl._triedPng) {
+    // First failure: try the .png version
+    imgEl._triedPng = true;
+    imgEl.onerror = () => tryAssetFallback(imgEl, name);
+    imgEl.src = `assets/${name}.png`;
+    return;
+  }
+  // Both .svg and .png missing — replace with a labeled dashed vertical line
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:5px;padding:10px 0;';
+  wrap.innerHTML = `
+    <svg width="6" height="88" viewBox="0 0 6 88"
+         xmlns="http://www.w3.org/2000/svg" style="opacity:.45">
+      <line x1="3" y1="4" x2="3" y2="84"
+            stroke="#6655cc" stroke-width="2.5"
+            stroke-dasharray="5,4" stroke-linecap="round"/>
+    </svg>
+    <span style="font-size:7.5px;color:#5548aa;font-family:monospace;
+                 opacity:.55;text-align:center;max-width:78px;
+                 word-break:break-all;line-height:1.2;">${name}</span>`;
+  if (imgEl.parentNode) imgEl.replaceWith(wrap);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  DATA
+// ═══════════════════════════════════════════════════════════════════════
+const BREAD_DATA = {
+  white:        { label:'White Bread',      emoji:'🍞' },
+  wheat:        { label:'Whole Wheat',       emoji:'🌾' },
+  toast:        { label:'Toast',             emoji:'🫓' },
+  baguette:     { label:'Baguette',          emoji:'🥖' },
+  rye:          { label:'Rye Bread',         emoji:'🟤' },
+};
+const SPREAD_DATA = {
+  butter:       { label:'Butter',            emoji:'🧈', container:'butter dish'       },
+  peanut_butter:{ label:'Peanut Butter',     emoji:'🥜', container:'peanut butter jar' },
+  jam:          { label:'Strawberry Jam',    emoji:'🍓', container:'jam jar'           },
+  mayo:         { label:'Mayonnaise',        emoji:'🥚', container:'mayo jar'          },
+  mustard:      { label:'Mustard',           emoji:'💛', container:'mustard jar'       },
+  cream_cheese: { label:'Cream Cheese',      emoji:'🧀', container:'cream cheese box'  },
+};
+const FILLING_DATA = {
+  ham:     { label:'Ham',        emoji:'🥩', cuttable:false, washable:false },
+  cheese:  { label:'Cheese',     emoji:'🧀', cuttable:true,  washable:false },
+  tomato:  { label:'Tomato',     emoji:'🍅', cuttable:true,  washable:true  },
+  lettuce: { label:'Lettuce',    emoji:'🥬', cuttable:false, washable:true  },
+  cucumber:{ label:'Cucumber',   emoji:'🥒', cuttable:true,  washable:true  },
+  egg:     { label:'Boiled Egg', emoji:'🥚', cuttable:true,  washable:false },
+  salami:  { label:'Salami',     emoji:'🍕', cuttable:false, washable:false },
+  tuna:    { label:'Tuna',       emoji:'🐟', cuttable:false, washable:false },
+};
+const ACTIONS = [
+  { id:'wash',           emoji:'🧼', label:'Wash',            color:'#4ecdc4', twoObj:false },
+  { id:'open',           emoji:'📂', label:'Open',            color:'#45b7d1', twoObj:false },
+  { id:'close',          emoji:'📁', label:'Close',           color:'#45b7d1', twoObj:false },
+  { id:'take_out',       emoji:'🤲', label:'Take out',        color:'#96ceb4', twoObj:false },
+  { id:'put_back',       emoji:'↩️',  label:'Put back',        color:'#74b9ff', twoObj:false },
+  { id:'place',          emoji:'📍', label:'Place',           color:'#ffeaa7', twoObj:true,
+    obj1Label:'What?', obj2Label:'Where?' },
+  { id:'spread',         emoji:'🔪', label:'Spread',          color:'#fd79a8', twoObj:true,
+    obj1Label:'What to spread?', obj2Label:'On what?' },
+  { id:'cut',            emoji:'✂️',  label:'Cut',             color:'#e17055', twoObj:false },
+  { id:'add',            emoji:'➕', label:'Add to sandwich', color:'#a29bfe', twoObj:false },
+  { id:'close_sandwich', emoji:'🥪', label:'Close sandwich',  color:'#55efc4', twoObj:false },
+];
+
+// ═══════════════════════════════════════════════════════════════════════
+//  APP STATE
+// ═══════════════════════════════════════════════════════════════════════
+let state = { alienName:'', sandwich:{ bread:'', spreads:[], fillings:[] }, instructions:[] };
+let currentPage = 1;
+let msSelections = { 'ms-spreads':[], 'ms-fillings':[] };
+let modalInsertAfter = -1;
+let modalAction = null;
+let modalEditId = null;
+let instrIdCounter = 0;
+let dragSrcId = null;
+
+// ═══════════════════════════════════════════════════════════════════════
+//  STARS
+// ═══════════════════════════════════════════════════════════════════════
+(function initStars() {
+  const c = document.getElementById('star-canvas');
+  const ctx = c.getContext('2d');
+  let stars = [];
+  function resize() {
+    c.width = innerWidth; c.height = innerHeight;
+    stars = Array.from({length:160}, () => ({
+      x: Math.random()*c.width, y: Math.random()*c.height,
+      r: Math.random()*1.4 + .3,
+      a: Math.random(), da: (Math.random()-.5)*.008
+    }));
+  }
+  resize(); addEventListener('resize', resize);
+  (function draw() {
+    ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s => {
+      s.a = Math.max(.1, Math.min(1, s.a + s.da));
+      if (s.a <= .1 || s.a >= 1) s.da = -s.da;
+      ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+      ctx.fillStyle = `rgba(200,190,255,${s.a})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  })();
+})();
+
+// ═══════════════════════════════════════════════════════════════════════
+//  PAGE RENDERING  (each function fills the placeholder divs with text
+//  from the STORY object and images via the img() helper)
+// ═══════════════════════════════════════════════════════════════════════
+
+function renderPage1() {
+  // Spaceship crash landing scene
+  document.getElementById('pg1-illus').innerHTML = img('spaceship', '100%');
+  document.getElementById('pg1-heading').innerHTML = t('page1.heading');
+  document.getElementById('pg1-story').innerHTML   = renderParas('page1.paragraphs');
+  document.getElementById('pg1-name-label').innerHTML = t('page1.name_label');
+  document.getElementById('alien-name-input').placeholder = t('page1.name_placeholder');
+  document.getElementById('pg1-next').textContent  = t('page1.next_button');
+}
+
+function renderPage2() {
+  const n = state.alienName;
+  const vars = { name: n };
+  // House on the left, waving alien on the right
+  document.getElementById('pg2-illus').innerHTML =
+    img('house', '100%') + img('alien-waving', '100%');
+  document.getElementById('pg2-heading').innerHTML    = t('page2.heading', vars);
+  document.getElementById('pg2-story').innerHTML      = renderParas('page2.paragraphs', vars);
+  document.getElementById('pg2-box-heading').innerHTML= t('page2.algorithm_box_heading');
+  document.getElementById('pg2-box-text').innerHTML   = t('page2.algorithm_box_text');
+  document.getElementById('pg2-next').textContent     = t('page2.next_button');
+}
+
+function renderPage3() {
+  const n = state.alienName;
+  const vars = { name: n };
+  // Kitchen scene + confused alien (alien has NO idea what any of this is)
+  document.getElementById('pg3-illus').innerHTML =
+    img('kitchen', '60%') + img('alien-confused', '60%');
+  document.getElementById('pg3-heading').innerHTML = t('page3.heading', vars);
+  document.getElementById('pg3-intro').innerHTML   = t('page3.intro', vars);
+  document.getElementById('pg3-next').textContent  = t('page3.next_button');
+  // Fill alien name spans
+  document.querySelectorAll('.aname-span').forEach(s => s.textContent = n);
+}
+
+function renderPage4() {
+  const n = state.alienName;
+  const vars = { name: n };
+  document.getElementById('pg4-heading').innerHTML = t('page4.heading', vars);
+  document.getElementById('pg4-intro').innerHTML   = t('page4.intro', vars);
+  document.getElementById('pg4-next').textContent  = t('page4.next_button');
+  document.querySelector('.sidebar-help-text').innerHTML    = t('page4.sidebar_help', vars);
+  document.querySelector('.sidebar-remember-text').innerHTML= t('page4.sidebar_remember');
+
+  // Start with normal alien in sidebar — will update on validation
+  setPage4Alien('normal');
+
+  // Render sandwich summary in sidebar
+  const { bread, spreads, fillings } = state.sandwich;
+  const b = BREAD_DATA[bread];
+  let html = '';
+  if (b) html += `<span class="chip">${b.emoji} ${b.label}</span>`;
+  spreads.forEach(s  => { const d=SPREAD_DATA[s];   if(d) html+=`<span class="chip">${d.emoji} ${d.label}</span>`; });
+  fillings.forEach(f => { const d=FILLING_DATA[f];  if(d) html+=`<span class="chip">${d.emoji} ${d.label}</span>`; });
+  document.getElementById('sidebar-sandwich').innerHTML = html;
+
+  renderInstructions();
+  updateStepBadge();
+}
+
+function renderPage5() {
+  const n = state.alienName;
+  const vars = { name: n };
+  // Happy eating alien
+  document.getElementById('pg5-illus').innerHTML   = img('alien-eating', '100%');
+  document.getElementById('pg5-heading').innerHTML = t('page5.heading', vars);
+  document.getElementById('pg5-story').innerHTML   = renderParas('page5.paragraphs', vars);
+  document.getElementById('pg5-algo-title').innerHTML = t('page5.algo_title', vars);
+
+  // Render the completed algorithm as a formatted list
+  const list = document.getElementById('pg5-algo');
+  if (state.instructions.length === 0) {
+    list.innerHTML = '<p style="color:var(--text-dim);font-size:.9rem">No steps recorded.</p>';
+  } else {
+    list.innerHTML = state.instructions.map((ins, i) => {
+      const a = getActionData(ins.actionId);
+      return `<div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--surface2);border-radius:8px;margin-bottom:5px;font-size:.9rem">
+        <span style="font-family:'Baloo 2',sans-serif;font-size:.75rem;font-weight:800;color:var(--text-dim);width:22px;text-align:center">${i+1}</span>
+        <span style="font-size:1rem">${a.emoji}</span>
+        <span style="font-weight:700">${a.label}</span>
+        ${ins.obj1 ? `<span style="color:var(--blue)">${ins.obj1}</span>` : ''}
+        ${ins.obj2 ? `<span style="color:var(--text-dim)">→</span><span style="color:var(--teal)">${ins.obj2}</span>` : ''}
+      </div>`;
+    }).join('');
+  }
+  launchConfetti();
+}
+
+// Update the alien image on page 4 to reflect validation state
+// variant: 'normal' (waiting), 'confused' (has hints), 'happy' (all clear)
+function setPage4Alien(variant) {
+  const wrap = document.getElementById('pg4-alien-wrap');
+  if (!wrap) return;
+  wrap.innerHTML = img('alien-' + variant, '220px');
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  NAVIGATION
+// ═══════════════════════════════════════════════════════════════════════
+function goPage(n) {
+  if (n === 2) renderPage2();
+  if (n === 3) renderPage3();
+  if (n === 4) renderPage4();
+  if (n === 5) renderPage5();
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('pg' + n).classList.add('active');
+  currentPage = n;
+  updateProgress();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function updateProgress() {
+  const labels = ['Find alien','Go home','Pick sandwich','Write algorithm','Eat! 🎉'];
+  const wrap = document.getElementById('progress-wrap');
+  wrap.innerHTML = '';
+  for (let i = 1; i <= 5; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'pdot' + (i === currentPage ? ' active' : i < currentPage ? ' done' : '');
+    dot.innerHTML = (i < currentPage ? '✓' : i) + `<span class="pdot-label">${labels[i-1]}</span>`;
+    wrap.appendChild(dot);
+    if (i < 5) { const line = document.createElement('div'); line.className='pdot-line'; wrap.appendChild(line); }
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  PAGE 1 — Name input
+// ═══════════════════════════════════════════════════════════════════════
+function updateNamePreview() {
+  const val = document.getElementById('alien-name-input').value.trim();
+  state.alienName = val;
+  const preview = document.getElementById('name-preview');
+  const btn = document.getElementById('pg1-next');
+  if (val.length >= 1) {
+    preview.textContent = applyVars(t('page1.name_greeting'), { name: val });
+    btn.disabled = false;
+  } else {
+    preview.textContent = '';
+    btn.disabled = true;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  MULTI-SELECT COMPONENT
+// ═══════════════════════════════════════════════════════════════════════
+function toggleMs(msId) {
+  const drop = document.getElementById(msId + '-drop');
+  const trig = document.querySelector(`#${msId} .ms-trigger`);
+  const isOpen = drop.classList.contains('open');
+  document.querySelectorAll('.ms-drop.open').forEach(d => d.classList.remove('open'));
+  document.querySelectorAll('.ms-trigger.open').forEach(t => t.classList.remove('open'));
+  if (!isOpen) { drop.classList.add('open'); trig.classList.add('open'); }
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.ms')) {
+    document.querySelectorAll('.ms-drop.open').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.ms-trigger.open').forEach(t => t.classList.remove('open'));
+  }
+});
+function toggleOpt(el, msId, val) {
+  const sel = msSelections[msId] || [];
+  const idx = sel.indexOf(val);
+  if (idx >= 0) { sel.splice(idx, 1); el.classList.remove('sel2'); }
+  else          { sel.push(val);      el.classList.add('sel2');    }
+  msSelections[msId] = sel;
+  updateMsTrigger(msId);
+  if (msId === 'ms-spreads')  state.sandwich.spreads  = [...sel];
+  if (msId === 'ms-fillings') state.sandwich.fillings = [...sel];
+  updatePreview();
+  checkPage3Ready();
+}
+function updateMsTrigger(msId) {
+  const sel = msSelections[msId] || [];
+  const data = msId === 'ms-spreads' ? SPREAD_DATA : FILLING_DATA;
+  const trig = document.querySelector(`#${msId} .ms-trigger`);
+  const ph   = document.getElementById(`${msId}-ph`);
+  trig.querySelectorAll('.ms-tag').forEach(t => t.remove());
+  if (sel.length === 0) { ph.style.display = ''; }
+  else {
+    ph.style.display = 'none';
+    sel.forEach(v => {
+      const d = data[v]; if (!d) return;
+      const tag = document.createElement('span');
+      tag.className = 'ms-tag';
+      tag.innerHTML = `${d.emoji} ${d.label} <span class="rx" onclick="event.stopPropagation();removeTag('${msId}','${v}')">×</span>`;
+      trig.insertBefore(tag, ph);
+    });
+  }
+}
+function removeTag(msId, val) {
+  const sel = msSelections[msId];
+  const idx = sel.indexOf(val);
+  if (idx >= 0) sel.splice(idx, 1);
+  const opt = document.querySelector(`#${msId}-drop .ms-opt[onclick*="${val}"]`);
+  if (opt) opt.classList.remove('sel2');
+  updateMsTrigger(msId);
+  if (msId === 'ms-spreads')  state.sandwich.spreads  = [...sel];
+  if (msId === 'ms-fillings') state.sandwich.fillings = [...sel];
+  updatePreview();
+  checkPage3Ready();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  PAGE 3 — Sandwich builder
+// ═══════════════════════════════════════════════════════════════════════
+function updatePreview() {
+  state.sandwich.bread = document.getElementById('sw-bread').value;
+  const { bread, spreads, fillings } = state.sandwich;
+  const layers = document.getElementById('sw-layers');
+  layers.innerHTML = '';
+  if (!bread && spreads.length === 0 && fillings.length === 0) {
+    layers.innerHTML = '<p class="sw-empty">Nothing yet!</p>'; return;
+  }
+  const b = BREAD_DATA[bread];
+  if (b) addLayer(layers, b.emoji, b.label + ' (top slice)', '#9b8f6e');
+  spreads.forEach(s  => { const d=SPREAD_DATA[s];   if(d) addLayer(layers, d.emoji, d.label, '#a18c6a'); });
+  fillings.forEach(f => { const d=FILLING_DATA[f];  if(d) addLayer(layers, d.emoji, d.label, '#7a9e7e'); });
+  if (b) addLayer(layers, b.emoji, b.label + ' (bottom slice)', '#9b8f6e');
+  checkPage3Ready();
+}
+function addLayer(container, emoji, label, bg) {
+  const d = document.createElement('div');
+  d.className = 'sw-layer';
+  d.style.background = bg + '22';
+  d.style.borderLeft = `3px solid ${bg}`;
+  d.innerHTML = `<span>${emoji}</span><span>${label}</span>`;
+  container.appendChild(d);
+}
+function checkPage3Ready() {
+  const ok = !!state.sandwich.bread &&
+    (state.sandwich.spreads.length > 0 || state.sandwich.fillings.length > 0);
+  document.getElementById('pg3-next').disabled = !ok;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  ALGORITHM BUILDER — object lists per action
+// ═══════════════════════════════════════════════════════════════════════
+function getActionData(id) { return ACTIONS.find(a => a.id === id) || {}; }
+
+function getObjectsFor(actionId) {
+  const { bread, spreads, fillings } = state.sandwich;
+  const b = BREAD_DATA[bread];
+  const breadLabel  = b ? b.label : 'Bread';
+  const spreadObjs  = spreads.map(s  => { const d=SPREAD_DATA[s];   return d ? `${d.emoji} ${d.label}` : s; });
+  const fillingObjs = fillings.map(f => { const d=FILLING_DATA[f];  return d ? `${d.emoji} ${d.label}` : f; });
+  const cuttable    = fillings.filter(f => FILLING_DATA[f]?.cuttable).map(f => { const d=FILLING_DATA[f]; return `${d.emoji} ${d.label}`; });
+  const washable    = fillings.filter(f => FILLING_DATA[f]?.washable).map(f => { const d=FILLING_DATA[f]; return `${d.emoji} ${d.label}`; });
+  const containers  = state.sandwich.spreads.map(s => `🫙 ${SPREAD_DATA[s]?.container}`).filter(x => !x.includes('undefined'));
+  switch (actionId) {
+    case 'wash':          return { obj1:['👐 hands', ...washable], obj2:[] };
+    case 'open':          return { obj1:['🧊 fridge', `🍞 ${breadLabel} bag`, ...containers], obj2:[] };
+    case 'close':         return { obj1:['🧊 fridge', `🍞 ${breadLabel} bag`, ...containers], obj2:[] };
+    case 'take_out':      return { obj1:['🍽️ plate','🔪 knife',`🍞 ${breadLabel} slice`,...spreadObjs,...fillingObjs], obj2:[] };
+    case 'put_back':      return { obj1:[...spreadObjs,...fillingObjs,'🍽️ plate','🔪 knife'], obj2:[] };
+    case 'place':         return { obj1:[`🍞 ${breadLabel} slice`,...fillingObjs], obj2:['🍽️ on the plate','🍞 on the bread slice','🥪 on top of sandwich'] };
+    case 'spread':        return { obj1:spreadObjs, obj2:[`🍞 on the ${breadLabel}`,'🍞 on the bread slice'] };
+    case 'cut':           return { obj1:[...cuttable,'🥪 sandwich in half'], obj2:[] };
+    case 'add':           return { obj1:fillingObjs, obj2:[] };
+    case 'close_sandwich':return { obj1:[], obj2:[] };
+    default:              return { obj1:[], obj2:[] };
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  MODAL — add / edit instruction
+// ═══════════════════════════════════════════════════════════════════════
+function openModal(insertAfter, editId) {
+  modalInsertAfter = insertAfter;
+  modalEditId = editId || null;
+  modalAction = null;
+  const addBtn = document.getElementById('modal-add-btn');
+  addBtn.disabled = true;
+  addBtn.textContent = editId ? 'Update step ✓' : 'Add this step ✓';
+
+  const grid = document.getElementById('action-grid');
+  grid.innerHTML = '';
+  ACTIONS.forEach(a => {
+    const objs = getObjectsFor(a.id);
+    const hasObjs = a.id === 'close_sandwich' || objs.obj1.length > 0;
+    const btn = document.createElement('div');
+    btn.className = 'abt';
+    btn.dataset.id = a.id;
+    btn.innerHTML = `<span class="ai">${a.emoji}</span><span class="al">${a.label}</span>`;
+    if (!hasObjs) { btn.style.opacity='.35'; btn.style.cursor='not-allowed'; btn.title='No items available'; return; }
+    btn.onclick = () => selectAction(a.id);
+    grid.appendChild(btn);
+  });
+
+  document.getElementById('obj-area').style.display = 'none';
+  document.getElementById('obj-area').innerHTML = '';
+
+  if (editId) {
+    const ins = state.instructions.find(i => i.id === editId);
+    if (ins) setTimeout(() => selectAction(ins.actionId, ins.obj1, ins.obj2), 50);
+  }
+  document.getElementById('modal-bg').style.display = 'flex';
+}
+
+function selectAction(actionId, prefillObj1, prefillObj2) {
+  modalAction = actionId;
+  document.querySelectorAll('.abt').forEach(b => b.classList.toggle('picked', b.dataset.id === actionId));
+  const a    = getActionData(actionId);
+  const objs = getObjectsFor(actionId);
+  const area = document.getElementById('obj-area');
+  area.innerHTML = '';
+  if (actionId === 'close_sandwich') {
+    area.style.display = 'block';
+    area.innerHTML = `<p style="color:var(--teal);font-size:.9rem;margin-top:8px">✅ Places the top slice of bread on the sandwich. No extra choices needed!</p>`;
+    document.getElementById('modal-add-btn').disabled = false;
+    return;
+  }
+  if (objs.obj1.length === 0) { area.style.display='none'; document.getElementById('modal-add-btn').disabled=false; return; }
+  area.style.display = 'block';
+  if (a.twoObj) {
+    area.innerHTML = `<div class="obj-row">
+      <div class="fg"><label>${a.obj1Label||'Object 1:'}</label>
+        <select class="sel" id="modal-obj1" onchange="checkModalReady()">
+          <option value="">— pick one —</option>
+          ${objs.obj1.map(o=>`<option value="${o}"${prefillObj1===o?' selected':''}>${o}</option>`).join('')}
+        </select></div>
+      <div class="fg"><label>${a.obj2Label||'Object 2:'}</label>
+        <select class="sel" id="modal-obj2" onchange="checkModalReady()">
+          <option value="">— pick one —</option>
+          ${objs.obj2.map(o=>`<option value="${o}"${prefillObj2===o?' selected':''}>${o}</option>`).join('')}
+        </select></div>
+    </div>`;
+  } else {
+    area.innerHTML = `<div class="fg" style="margin-top:10px"><label>${a.obj1Label||'What?'}</label>
+      <select class="sel" id="modal-obj1" onchange="checkModalReady()">
+        <option value="">— pick one —</option>
+        ${objs.obj1.map(o=>`<option value="${o}"${prefillObj1===o?' selected':''}>${o}</option>`).join('')}
+      </select></div>`;
+  }
+  checkModalReady();
+}
+
+function checkModalReady() {
+  if (!modalAction) return;
+  const a    = getActionData(modalAction);
+  const objs = getObjectsFor(modalAction);
+  const obj1 = document.getElementById('modal-obj1');
+  const obj2 = document.getElementById('modal-obj2');
+  let ok = true;
+  if (objs.obj1.length > 0) ok = ok && obj1 && obj1.value !== '';
+  if (a.twoObj)              ok = ok && obj2 && obj2.value !== '';
+  document.getElementById('modal-add-btn').disabled = !ok;
+}
+
+function confirmInstruction() {
+  if (!modalAction) return;
+  const obj1El = document.getElementById('modal-obj1');
+  const obj2El = document.getElementById('modal-obj2');
+  const ins = {
+    id: modalEditId || ('ins_' + (instrIdCounter++)),
+    actionId: modalAction,
+    obj1: obj1El ? obj1El.value : '',
+    obj2: obj2El ? obj2El.value : '',
+  };
+  if (modalEditId) {
+    const idx = state.instructions.findIndex(i => i.id === modalEditId);
+    if (idx >= 0) state.instructions[idx] = ins;
+  } else if (modalInsertAfter === -1) {
+    state.instructions.push(ins);
+  } else {
+    state.instructions.splice(modalInsertAfter + 1, 0, ins);
+  }
+  closeModal();
+  renderInstructions();
+  updateStepBadge();
+  checkPage4Ready();
+  // Reset alien back to normal when instructions change (validation stale)
+  setPage4Alien('normal');
+  document.getElementById('hints-area').innerHTML = '';
+}
+
+function closeModal() {
+  document.getElementById('modal-bg').style.display = 'none';
+  modalAction = null; modalEditId = null;
+}
+function closeModalOnBg(e) {
+  if (e.target === document.getElementById('modal-bg')) closeModal();
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  INSTRUCTION LIST RENDERING
+// ═══════════════════════════════════════════════════════════════════════
+function renderInstructions() {
+  const list = document.getElementById('instr-list');
+  if (!list) return;
+  list.innerHTML = '';
+  if (state.instructions.length === 0) {
+    list.innerHTML = `<div class="empty"><div class="ei">🤔</div><p>No steps yet! Click <b>"＋ Add a step"</b> below to start.</p></div>`;
+    return;
+  }
+  list.appendChild(makeInsertRow(-1));
+  state.instructions.forEach((ins, idx) => {
+    const a = getActionData(ins.actionId);
+    const card = document.createElement('div');
+    card.className = 'instr-card';
+    card.dataset.id = ins.id;
+    card.style.borderLeftColor = a.color || 'var(--border2)';
+    card.draggable = true;
+    let desc = `<span class="instr-action">${a.emoji} ${a.label}</span>`;
+    if (ins.obj1) desc += ` <span class="instr-obj">${ins.obj1}</span>`;
+    if (ins.obj2) desc += ` <span style="color:var(--text-dim)">→</span> <span style="color:var(--teal)">${ins.obj2}</span>`;
+    card.innerHTML = `
+      <span class="drag-handle" title="Drag to reorder">⠿</span>
+      <span class="instr-num">${idx+1}</span>
+      <span class="instr-body">${desc}</span>
+      <span class="instr-controls">
+        <button class="ibt ibt-mv" onclick="moveInstr('${ins.id}',-1)" title="Move up">▲</button>
+        <button class="ibt ibt-mv" onclick="moveInstr('${ins.id}',1)"  title="Move down">▼</button>
+        <button class="ibt ibt-del" onclick="deleteInstr('${ins.id}')" title="Delete">✕</button>
+      </span>`;
+    card.addEventListener('dragstart', e => { dragSrcId=ins.id; setTimeout(()=>card.classList.add('dragging'),0); e.dataTransfer.effectAllowed='move'; });
+    card.addEventListener('dragend',   () => { card.classList.remove('dragging'); document.querySelectorAll('.instr-card.drag-over').forEach(c=>c.classList.remove('drag-over')); });
+    card.addEventListener('dragover',  e => { e.preventDefault(); card.classList.add('drag-over'); });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', e => {
+      e.preventDefault(); card.classList.remove('drag-over');
+      if (dragSrcId && dragSrcId !== ins.id) {
+        const si = state.instructions.findIndex(i=>i.id===dragSrcId);
+        const ti = state.instructions.findIndex(i=>i.id===ins.id);
+        const [m] = state.instructions.splice(si,1);
+        state.instructions.splice(ti, 0, m);
+        renderInstructions();
+        updateStepBadge();
+      }
+    });
+    list.appendChild(card);
+    list.appendChild(makeInsertRow(idx));
+  });
+}
+
+function makeInsertRow(afterIdx) {
+  const row = document.createElement('div');
+  row.className = 'ins-row';
+  row.innerHTML = `<div class="ins-line"></div><button class="ins-btn" onclick="openModal(${afterIdx})">+ insert here</button><div class="ins-line"></div>`;
+  row.addEventListener('mouseenter', () => row.style.opacity='1');
+  row.addEventListener('mouseleave', () => row.style.opacity='0');
+  return row;
+}
+
+function moveInstr(id, dir) {
+  const idx = state.instructions.findIndex(i => i.id === id);
+  const ni  = idx + dir;
+  if (ni < 0 || ni >= state.instructions.length) return;
+  [state.instructions[idx], state.instructions[ni]] = [state.instructions[ni], state.instructions[idx]];
+  renderInstructions();
+}
+
+function deleteInstr(id) {
+  state.instructions = state.instructions.filter(i => i.id !== id);
+  renderInstructions();
+  updateStepBadge();
+  checkPage4Ready();
+  setPage4Alien('normal');
+  document.getElementById('hints-area').innerHTML = '';
+}
+
+function clearAll() {
+  if (state.instructions.length === 0) return;
+  if (confirm('Delete all steps and start fresh?')) {
+    state.instructions = [];
+    renderInstructions();
+    updateStepBadge();
+    setPage4Alien('normal');
+    document.getElementById('hints-area').innerHTML = '';
+    checkPage4Ready();
+  }
+}
+
+function updateStepBadge() {
+  const n = state.instructions.length;
+  const badge = document.getElementById('step-badge');
+  if (badge) badge.textContent = `📋 ${n} step${n !== 1 ? 's' : ''} written`;
+}
+
+function checkPage4Ready() {
+  const btn = document.getElementById('pg4-next');
+  if (btn) btn.disabled = state.instructions.length < 2;
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  VALIDATION — checks algorithm for common errors and shows hints.
+//  The alien's expression updates to match the result:
+//    confused = hints exist, happy = all clear
+// ═══════════════════════════════════════════════════════════════════════
+function runValidation() {
+  const ins = state.instructions;
+  const { spreads, fillings, bread } = state.sandwich;
+  const n = state.alienName;
+  const hintList = [];
+
+  function addHint(key, vars = {}) {
+    const icon = t(`hints.${key}.icon`);
+    const text = t(`hints.${key}.text`, { name: n, ...vars });
+    hintList.push({ icon, text });
+  }
+
+  // Rule 1: Wash hands first
+  if (!ins.some(i => i.actionId==='wash' && i.obj1.includes('hands')))
+    addHint('hands_not_washed');
+
+  // Rule 2: Fridge opened and closed
+  const fOpen  = ins.filter(i => i.actionId==='open'  && i.obj1.includes('fridge')).length;
+  const fClose = ins.filter(i => i.actionId==='close' && i.obj1.includes('fridge')).length;
+  if (fOpen === 0 && fillings.length > 0) addHint('fridge_not_opened');
+  else if (fOpen > fClose)                addHint('fridge_not_closed');
+
+  // Rule 3: Every container (spread jar) opened must be closed
+  spreads.forEach(sId => {
+    const d = SPREAD_DATA[sId]; if (!d) return;
+    const container = d.container;
+    const kw = container.split(' ')[0].toLowerCase();
+    const cO = ins.filter(i => i.actionId==='open'  && i.obj1.toLowerCase().includes(kw)).length;
+    const cC = ins.filter(i => i.actionId==='close' && i.obj1.toLowerCase().includes(kw)).length;
+    if (cO > cC) addHint('container_not_closed', { container });
+  });
+
+  // Rule 4: Plate taken out
+  if (!ins.some(i => i.actionId==='take_out' && i.obj1.includes('plate')))
+    addHint('plate_not_taken');
+
+  // Rule 5: Bread taken out
+  if (!ins.some(i => i.actionId==='take_out' && (i.obj1.toLowerCase().includes('slice') || i.obj1.toLowerCase().includes('bread'))))
+    addHint('bread_not_taken');
+
+  // Rule 6: Each spread taken out before being spread
+  spreads.forEach(sId => {
+    const d = SPREAD_DATA[sId]; if (!d) return;
+    const used  = ins.some(i => i.actionId==='spread'   && i.obj1.toLowerCase().includes(d.label.toLowerCase()));
+    const taken = ins.some(i => i.actionId==='take_out' && i.obj1.toLowerCase().includes(d.label.toLowerCase()));
+    if (used && !taken) addHint('spread_not_taken', { spread: `${d.emoji} ${d.label}` });
+  });
+
+  // Rule 7: Sandwich closed
+  if (!ins.some(i => i.actionId==='close_sandwich'))
+    addHint('sandwich_not_closed');
+
+  // Rule 8: Items put back
+  if (spreads.length > 0 && !ins.some(i => i.actionId==='put_back'))
+    addHint('nothing_put_back');
+
+  // ── Render results & update alien ──────────────────────────────────
+  const area = document.getElementById('hints-area');
+  if (!area) return;
+
+  if (hintList.length === 0) {
+    // All clear — alien is happy!
+    setPage4Alien('happy');
+    area.innerHTML = `<div class="validation-ok" style="margin-bottom:12px">
+      ${t('page4.validation_success', { name: n })}
+    </div>`;
+    document.getElementById('pg4-next').disabled = false;
+  } else {
+    // Has issues — alien is confused
+    setPage4Alien('confused');
+    let html = `<div style="margin-bottom:8px">
+      <div style="font-family:'Baloo 2',sans-serif;font-size:1rem;font-weight:700;color:var(--yellow);margin-bottom:10px">
+        ${t('hints.section_title', { name: n })}
+      </div>`;
+    hintList.forEach(h => {
+      html += `<div class="hint-box"><span class="hint-ico">${h.icon}</span><span class="hint-txt">${h.text}</span></div>`;
+    });
+    html += `<p style="font-size:.82rem;color:var(--text-dim);margin-top:8px">${t('hints.footer')}</p></div>`;
+    area.innerHTML = html;
+    document.getElementById('pg4-next').disabled = false; // always allow proceeding
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  SUCCESS — confetti burst
+// ═══════════════════════════════════════════════════════════════════════
+function launchConfetti() {
+  const colors = ['#ffd93d','#39ff14','#ff6b9d','#4cc9f0','#c77dff','#ff9f43','#55efc4'];
+  for (let i = 0; i < 80; i++) {
+    const p = document.createElement('div');
+    p.className = 'confetti-piece';
+    p.style.left = Math.random()*100 + 'vw';
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDuration = (2 + Math.random()*3) + 's';
+    p.style.animationDelay    = (Math.random()*2) + 's';
+    p.style.width  = (7 + Math.random()*8) + 'px';
+    p.style.height = (7 + Math.random()*8) + 'px';
+    document.body.appendChild(p);
+    p.addEventListener('animationend', () => p.remove());
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  RESTART
+// ═══════════════════════════════════════════════════════════════════════
+function restartGame() {
+  state = { alienName:'', sandwich:{ bread:'', spreads:[], fillings:[] }, instructions:[] };
+  msSelections = { 'ms-spreads':[], 'ms-fillings':[] };
+  instrIdCounter = 0;
+  document.getElementById('sw-bread').value = '';
+  document.querySelectorAll('.ms-opt.sel2').forEach(o => o.classList.remove('sel2'));
+  updateMsTrigger('ms-spreads');
+  updateMsTrigger('ms-fillings');
+  document.getElementById('sw-layers').innerHTML = '<p class="sw-empty">Nothing yet!</p>';
+  document.getElementById('alien-name-input').value = '';
+  document.getElementById('name-preview').textContent = '';
+  document.getElementById('pg1-next').disabled = true;
+  goPage(1);
+}
+
+// ═══════════════════════════════════════════════════════════════════════
+//  BOOT
+// ═══════════════════════════════════════════════════════════════════════
+(async function boot() {
+  await loadStory();         // load YAML story text
+  renderPage1();             // now render page 1 with real text
+  updateProgress();
+})();
+</script>
+</body>
+</html>

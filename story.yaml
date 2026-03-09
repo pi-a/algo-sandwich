@@ -1,0 +1,80 @@
+# ═══════════════════════════════════════════════════════════════════════
+#  story.yaml
+# ═══════════════════════════════════════════════════════════════════════
+
+page1:
+  heading: "<span class='ei'>🛸</span> Something Has Landed!"
+  paragraphs:
+    - "\"Is that shooting star going to end up in our backyard?\" You look closely through the window and immediately run outside to investigate the strange light."
+    - "Soon, you realize it isn't a star at all, but a spaceship! Its hatch opens, and a confused little fellow starts looking around. It sees you waving."
+    - "You notice the little alien is scanning you with a device on its arm. \"Hey little buddy, what's your name?\" you ask gently."
+    - "The alien waits a few seconds, looking at its device. \"I'm <em>Baby ƸŧÞŤƍƜƾɮƢ</em>,\" it responds."
+    - "\"You can speak our language?\" you ask, barely holding back your excitement."
+    - "\"No, I am using this universal translator. It helps me understand and communicate with anyone across galaxies,\" the <em>baby alien</em> explains calmly."
+    - "\"Is it okay if I call you by an Earth name, since I can't pronounce your real name?\" you ask, hiding your shyness."
+  name_label: "✏️ Type your alien's name here:"
+  name_placeholder: "e.g. Zorp, Bleep, Nova…"
+  name_greeting: "👾 \"Yes, you can call me <em>{name}</em>!\" the <em>baby alien</em> giggles. It finds Earth names very funny."
+  next_button: "Take them inside! →"
+
+page2:
+  heading: "<span class='ei'>🏠</span> Welcome Home, <em>{name}</em>!"
+  paragraphs:
+    - "\"Are you visiting Earth?\" you ask <em>{name}</em>. \"I was traveling through your solar system and had to make an emergency landing. My ship needs to run its auto-repair procedure before I can continue my travel through the galaxies,\" <em>{name}</em> says, pointing at the pod."
+    - "\"Would you like to stay with us while your ship is getting repaired?\" you ask, inviting <em>{name}</em> inside."
+    - "<em>Baby {name}</em> has never been to Earth before. It doesn't know anything about our appliances, our food, or our rules. This is its <b>first</b> travel experience!"
+    - "While <em>{name}</em> looks around the house in wonder, you remember that you have school the next morning. You decide to teach <em>{name}</em> how to make your favorite sandwich, just in case <em>{name}</em> gets hungry while you're gone."
+  algorithm_box_heading: "🤔 Think about it:"
+  algorithm_box_text: "Imagine you had to explain how to make a sandwich to someone who had never seen a kitchen. <b>Every single step</b> needs to be explained. This is called writing an <b>algorithm</b>: a step-by-step set of instructions a computer (or an alien!) can follow exactly."
+  next_button: "Plan the sandwich! 🥪"
+
+page3:
+  heading: "<span class='ei'>🥪</span> Teach <em>{name}</em> to Make a Sandwich"
+  intro: "\"What's that?\" <em>{name}</em> asks. \"That's Humphrey Bobark, our pet dog,\" you respond. \"And what's that?\" <em>{name}</em> asks. \"That would be Mr. Fluff, our cat.\" You notice something important: to tell <em>{name}</em> how to make a sandwich, you need to be very thorough. You need to write a step-by-step guide!"
+  next_button: "Now write the instructions! 📋"
+
+page4:
+  heading: "<span class='ei'>📋</span> Write the <b>Algorithm</b> for <em>{name}</em>!"
+  intro: "You have chosen the sandwich. Now write the exact steps one at a time so <em>{name}</em> can follow them perfectly. Remember: <em>{name}</em> has never used a fridge or a knife before. Every tiny step matters!"
+  sidebar_help: "Click \"＋ Add a step\" to choose an action and its object. You can drag steps up or down to reorder them. Click 🔍 Check my instructions! to get helpful hints."
+  sidebar_remember: "An <b>algorithm</b> must be complete and in the right <b>order</b>. Every little step counts!"
+  validation_success: "✅ Great <b>algorithm</b>! <em>{name}</em> should be able to follow all those steps. Well done! <em>{name}</em> can now feed itself! 🥪"
+  next_button: "Feed the alien! 🚀"
+
+page5:
+  heading: "<span class='ei'>🎉</span> Amazing Work! <span class='ei'>🎉</span>"
+  paragraphs:
+    - "You left for school. <em>{name}</em> carefully read every single step of your <b>algorithm</b> and followed it perfectly."
+    - "When you came home, <em>{name}</em> was sitting at the kitchen table with the biggest smile. \"The <b>algorithm</b> worked!\" <em>{name}</em> beeped happily. 🛸🥪✨"
+  algo_title: "<span class='ei'>📋</span> <em>{name}</em>'s Sandwich <b>Algorithm</b>"
+
+hints:
+  section_title: "🛸 <em>{name}</em> has some questions about your <b>algorithm</b>:"
+  footer: "Fix the hints above, then check again!"
+  hands_not_washed:
+    icon: "🧼"
+    text: "Did <em>{name}</em> wash their hands before touching food? Try adding <b>Wash → 👐 hands</b> near the start."
+  fridge_not_closed:
+    icon: "🚪"
+    text: "Uh oh! The fridge is still open! Remember to add <b>Close → 🧊 fridge</b>."
+  fridge_not_opened:
+    icon: "🧊"
+    text: "The fridge was never opened! Add <b>Open → 🧊 fridge</b> before taking things out."
+  container_not_closed:
+    icon: "🫙"
+    text: "The {container} is still open! Add <b>Close → 🫙 {container}</b>!"
+  plate_not_taken:
+    icon: "🍽️"
+    text: "<em>{name}</em> needs a plate! Add <b>Take out → 🍽️ plate</b>."
+  bread_not_taken:
+    icon: "🍞"
+    text: "No bread? Add <b>Take out → 🍞 bread slice</b>."
+  spread_not_taken:
+    icon: "🤔"
+    text: "<b>First</b> add <b>Take out → {spread}</b>."
+  sandwich_not_closed:
+    icon: "🥪"
+    text: "The sandwich is still open! Add <b>Close sandwich</b> to finish it off."
+  nothing_put_back:
+    icon: "↩️"
+    text: "<em>{name}</em> should tidy up. Add some <b>Put back</b> steps!"
