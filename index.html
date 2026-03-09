@@ -411,17 +411,17 @@ page2:
     - "<em>Baby {name}</em> has never been to Earth before. It doesn't know anything about our appliances, our food, or our rules. This is its <b>first</b> travel experience!"
     - "While <em>{name}</em> looks around the house in wonder, you remember that you have school the next morning. You decide to teach <em>{name}</em> how to make your favorite sandwich, just in case <em>{name}</em> gets hungry while you're gone."
   algorithm_box_heading: "🤔 Think about it:"
-  algorithm_box_text: "Imagine you had to explain how to make a sandwich to someone who had never seen a kitchen. <b>Every single step</b> needs to be explained. This is called writing an <b>algorithm</b>: a step-by-step set of instructions a computer (or an alien!) can follow exactly."
+  algorithm_box_text: "Imagine you had to explain how to make a sandwich to someone who had never seen a kitchen. <b>Every single step</b> needs to be explained. This is called writing an <b>algorithm</b>: a step-by-step set of <b>instructions</b> a <em>computer</em> (or an <em>alien</em>!) can follow exactly."
   next_button: "Plan the sandwich! 🥪"
 
 page3:
   heading: "<span class='ei'>🥪</span> Teach {name} to Make a Sandwich"
-  intro: "\"What's that?\" <em>{name}</em> asks. \"That's Humphrey Bobark, our pet dog,\" you respond. \"And what's that?\" <em>{name}</em> asks. \"That would be Mr. Fluff, our cat.\" You notice something important: to tell <em>{name}</em> how to make a sandwich, you need to be very thorough. You need to write a step-by-step guide!"
+  intro: "\"What's that?\" <em>{name}</em> asks. \"That's Humphrey Bobark, our pet dog,\" you respond. \"And what's that?\" <em>{name}</em> asks. \"That would be Mr. Fluff, our cat.\" You notice something important: to tell <em>{name}</em> how to make a sandwich, you need to be very thorough. You need to write a <b>step-by-step guide</b>!"
   next_button: "Now write the instructions! 📋"
 
 page4:
   heading: "<span class='ei'>📋</span> Write the <b>Algorithm</b> for {name}!"
-  intro: "You have chosen the sandwich. Now write the exact steps one at a time so <em>{name}</em> can follow them perfectly. Remember: <em>{name}</em> has never used a fridge or a knife before. Every tiny step matters!"
+  intro: "You have chosen the sandwich. Now write the exact steps one at a time so <em>{name}</em> can follow them perfectly. Remember: <em>{name}</em> has never used a fridge or a knife before. <b>Every</b> tiny <b>step</b> matters!"
   sidebar_help: "Click \"＋ Add a step\" to choose an action and its object. You can drag steps up or down to reorder them. Click 🔍 Check my instructions! to get helpful hints."
   sidebar_remember: "An <b>algorithm</b> must be complete and in the right <b>order</b>. Every little step counts!"
   validation_success: "✅ Great algorithm! {name} should be able to follow all those steps. Well done! {name} can now feed itself! 🥪"
@@ -784,7 +784,7 @@ function goPage(n) {
 }
 
 function updateProgress() {
-  const labels = ['Find alien','Go home','Pick sandwich','Write algorithm','Eat! 🎉'];
+  const labels = ['Find Alien','Go Home','Pick Sandwich','Write Algorithm','Eat! 🎉'];
   const wrap = document.getElementById('progress-wrap');
   wrap.innerHTML = '';
   for (let i = 1; i <= 5; i++) {
