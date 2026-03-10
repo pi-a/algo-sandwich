@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🛸 Adventures of an Alien Baby - How to Make a Sandwich?</title>
+  <title>🛸 Abenteuer eines Alien-Babys - Wie macht man ein Sandwich?</title>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -216,7 +216,7 @@
         <p class="story" id="pg2-box-text"></p>
       </div>
       <div class="nav">
-        <button class="btn btn-ghost" onclick="goPage(1)">← Back</button>
+        <button class="btn btn-ghost" onclick="goPage(1)">← Zurück</button>
         <button class="btn btn-primary" id="pg2-next" onclick="goPage(3)"></button>
       </div>
     </div>
@@ -233,52 +233,52 @@
     <div class="two-col">
       <div>
         <div class="card">
-          <h3>🥪 Build Your Sandwich</h3>
+          <h3>🥪 Baue dein Sandwich</h3>
           <p style="font-size:.88rem;color:var(--text-dim);margin-bottom:16px">
-            Pick the ingredients — <span class="aname-span"></span> will need to find them all!
+            Wähle die Zutaten — <span class="aname-span"></span> muss sie alle finden!
           </p>
           <div class="fg">
-            <label><span>🍞</span> Bread type <span style="color:#ff6b6b">*</span></label>
+            <label><span>🍞</span> Brotsorte <span style="color:#ff6b6b">*</span></label>
             <select class="sel" id="sw-bread" onchange="updatePreview()">
-              <option value="">— Choose a bread —</option>
-              <option value="white">🍞 White Bread</option>
-              <option value="wheat">🌾 Whole Wheat Bread</option>
+              <option value="">— Wähle ein Brot —</option>
+              <option value="white">🍞 Weißbrot</option>
+              <option value="wheat">🌾 Vollkornbrot</option>
               <option value="toast">🫓 Toast</option>
               <option value="baguette">🥖 Baguette</option>
-              <option value="rye">🟤 Rye Bread</option>
+              <option value="rye">🟤 Roggenbrot</option>
             </select>
           </div>
           <div class="fg">
-            <label><span>🧈</span> Spreads / Sauces <span style="color:var(--text-dim)">(pick one or more)</span></label>
+            <label><span>🧈</span> Aufstriche / Saucen <span style="color:var(--text-dim)">(einen oder mehrere wählen)</span></label>
             <div class="ms" id="ms-spreads">
               <div class="ms-trigger" onclick="toggleMs('ms-spreads')">
-                <span class="ms-ph" id="ms-spreads-ph">— Choose spreads —</span>
+                <span class="ms-ph" id="ms-spreads-ph">— Wähle Aufstriche —</span>
               </div>
               <div class="ms-drop" id="ms-spreads-drop">
                 <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','butter')"><div class="ms-cb">✓</div>🧈 Butter</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','peanut_butter')"><div class="ms-cb">✓</div>🥜 Peanut Butter</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','jam')"><div class="ms-cb">✓</div>🍓 Strawberry Jam</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','peanut_butter')"><div class="ms-cb">✓</div>🥜 Erdnussbutter</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','jam')"><div class="ms-cb">✓</div>🍓 Erdbeermarmelade</div>
                 <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','mayo')"><div class="ms-cb">✓</div>🥚 Mayonnaise</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','mustard')"><div class="ms-cb">✓</div>💛 Mustard</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','cream_cheese')"><div class="ms-cb">✓</div>🧀 Cream Cheese</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','mustard')"><div class="ms-cb">✓</div>💛 Senf</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-spreads','cream_cheese')"><div class="ms-cb">✓</div>🧀 Frischkäse</div>
               </div>
             </div>
           </div>
           <div class="fg">
-            <label><span>🥩</span> Fillings <span style="color:var(--text-dim)">(pick one or more)</span></label>
+            <label><span>🥩</span> Beläge <span style="color:var(--text-dim)">(einen oder mehrere wählen)</span></label>
             <div class="ms" id="ms-fillings">
               <div class="ms-trigger" onclick="toggleMs('ms-fillings')">
-                <span class="ms-ph" id="ms-fillings-ph">— Choose fillings —</span>
+                <span class="ms-ph" id="ms-fillings-ph">— Wähle Beläge —</span>
               </div>
               <div class="ms-drop" id="ms-fillings-drop">
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','ham')"><div class="ms-cb">✓</div>🥩 Ham</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','cheese')"><div class="ms-cb">✓</div>🧀 Cheese</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','tomato')"><div class="ms-cb">✓</div>🍅 Tomato</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','lettuce')"><div class="ms-cb">✓</div>🥬 Lettuce</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','cucumber')"><div class="ms-cb">✓</div>🥒 Cucumber</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','egg')"><div class="ms-cb">✓</div>🥚 Boiled Egg</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','ham')"><div class="ms-cb">✓</div>🥩 Schinken</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','cheese')"><div class="ms-cb">✓</div>🧀 Käse</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','tomato')"><div class="ms-cb">✓</div>🍅 Tomate</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','lettuce')"><div class="ms-cb">✓</div>🥬 Salat</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','cucumber')"><div class="ms-cb">✓</div>🥒 Gurke</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','egg')"><div class="ms-cb">✓</div>🥚 Gekochtes Ei</div>
                 <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','salami')"><div class="ms-cb">✓</div>🍕 Salami</div>
-                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','tuna')"><div class="ms-cb">✓</div>🐟 Tuna</div>
+                <div class="ms-opt" onclick="toggleOpt(this,'ms-fillings','tuna')"><div class="ms-cb">✓</div>🐟 Thunfisch</div>
               </div>
             </div>
           </div>
@@ -287,14 +287,14 @@
       <!-- Live sandwich preview -->
       <div>
         <div class="sw-preview">
-          <div class="sw-title">Your sandwich so far:</div>
-          <div class="sw-layers" id="sw-layers"><p class="sw-empty">Nothing yet!</p></div>
+          <div class="sw-title">Dein Sandwich bisher:</div>
+          <div class="sw-layers" id="sw-layers"><p class="sw-empty">Noch nichts!</p></div>
           <div style="font-size:3rem;margin-top:10px">🥪</div>
         </div>
       </div>
     </div>
     <div class="nav">
-      <button class="btn btn-ghost" onclick="goPage(2)">← Back</button>
+      <button class="btn btn-ghost" onclick="goPage(2)">← Zurück</button>
       <button class="btn btn-primary" id="pg3-next" onclick="goPage(4)" disabled></button>
     </div>
   </div>
@@ -304,27 +304,27 @@
     <div class="card">
       <h2 id="pg4-heading"></h2>
       <p class="story" id="pg4-intro"></p>
-      <div class="step-badge" id="step-badge">📋 0 steps written</div>
+      <div class="step-badge" id="step-badge">📋 0 Schritte geschrieben</div>
     </div>
     <div class="algo-wrap">
       <div>
         <div class="card" style="padding:18px">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-            <h3 style="margin:0">📋 Your Algorithm</h3>
-            <button class="btn btn-ghost btn-sm" onclick="clearAll()" style="font-size:.76rem;padding:5px 12px">🗑 Clear all</button>
+            <h3 style="margin:0">📋 Dein Algorithmus</h3>
+            <button class="btn btn-ghost btn-sm" onclick="clearAll()" style="font-size:.76rem;padding:5px 12px">🗑 Alles löschen</button>
           </div>
           <div id="instr-list"></div>
           <div style="margin-top:8px">
-            <button class="btn btn-primary btn-sm" onclick="openModal(-1)">＋ Add a step</button>
+            <button class="btn btn-primary btn-sm" onclick="openModal(-1)">＋ Schritt hinzufügen</button>
           </div>
         </div>
         <div id="hints-area"></div>
         <div class="check-btns" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
-          <button class="btn btn-ghost" onclick="runValidation()">🔍 Check my instructions!</button>
-          <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Print / Save</button>
+          <button class="btn btn-ghost" onclick="runValidation()">🔍 Überprüfe meine Anleitung!</button>
+          <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Drucken / Speichern</button>
         </div>
         <div class="nav" style="margin-top:20px">
-          <button class="btn btn-ghost" onclick="goPage(3)">← Back</button>
+          <button class="btn btn-ghost" onclick="goPage(3)">← Zurück</button>
           <button class="btn btn-primary" id="pg4-next" onclick="goPage(5)" disabled></button>
         </div>
       </div>
@@ -333,14 +333,14 @@
         <div class="side-card">
           <!-- The alien here updates: normal → confused (hints) → happy (passes) -->
           <div id="pg4-alien-wrap"></div>
-          <h4 style="margin-bottom:10px">🥪 Your Sandwich</h4>
+          <h4 style="margin-bottom:10px">🥪 Dein Sandwich</h4>
           <div id="sidebar-sandwich"></div>
           <div style="margin-top:16px">
-            <h4 style="margin-bottom:8px">💡 How to use:</h4>
+            <h4 style="margin-bottom:8px">💡 So geht's:</h4>
             <p class="sidebar-help-text" style="font-size:.78rem;color:var(--text-dim);line-height:1.55"></p>
           </div>
           <div style="margin-top:16px">
-            <h4 style="margin-bottom:8px">🧠 Remember:</h4>
+            <h4 style="margin-bottom:8px">🧠 Denk dran:</h4>
             <p class="sidebar-remember-text" style="font-size:.78rem;color:var(--text-dim);line-height:1.55"></p>
           </div>
         </div>
@@ -361,7 +361,7 @@
         <h3 id="pg5-algo-title" style="margin-bottom:12px"></h3>
         <div id="pg5-algo"></div>
       </div>
-      <button class="btn btn-ghost" onclick="restartGame()" style="margin-top:10px">🔄 Start a new adventure!</button>
+      <button class="btn btn-ghost" onclick="restartGame()" style="margin-top:10px">🔄 Starte ein neues Abenteuer!</button>
     </div>
   </div>
 </div>
@@ -369,16 +369,16 @@
 <!-- ═══ Add/Edit step modal ═══ -->
 <div id="modal-bg" class="modal-bg" style="display:none" onclick="closeModalOnBg(event)">
   <div class="modal">
-    <h3>➕ Add a Step</h3>
+    <h3>➕ Schritt hinzufügen</h3>
     <p style="font-size:.86rem;color:var(--text-dim);margin-bottom:14px">
-      First pick what <b>action</b> to do, then choose the <b>object(s)</b>.
+      Wähle zuerst eine <b>Aktion</b> aus, dann wähle das <b>Objekt</b> (oder die Objekte).
     </p>
-    <h4 style="margin-bottom:8px">What action?</h4>
+    <h4 style="margin-bottom:8px">Welche Aktion?</h4>
     <div class="action-grid" id="action-grid"></div>
     <div id="obj-area" style="display:none"></div>
     <div class="modal-footer">
-      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary btn-sm" id="modal-add-btn" onclick="confirmInstruction()" disabled>Add this step ✓</button>
+      <button class="btn btn-ghost btn-sm" onclick="closeModal()">Abbrechen</button>
+      <button class="btn btn-primary btn-sm" id="modal-add-btn" onclick="confirmInstruction()" disabled>Schritt hinzufügen ✓</button>
     </div>
   </div>
 </div>
@@ -587,43 +587,43 @@ function tryAssetFallback(imgEl, name) {
 //  DATA
 // ═══════════════════════════════════════════════════════════════════════
 const BREAD_DATA = {
-  white:        { label:'White Bread',      emoji:'🍞' },
-  wheat:        { label:'Whole Wheat',       emoji:'🌾' },
-  toast:        { label:'Toast',             emoji:'🫓' },
-  baguette:     { label:'Baguette',          emoji:'🥖' },
-  rye:          { label:'Rye Bread',         emoji:'🟤' },
+  white:        { label:'Weißbrot',      emoji:'🍞' },
+  wheat:        { label:'Vollkornbrot',  emoji:'🌾' },
+  toast:        { label:'Toast',         emoji:'🫓' },
+  baguette:     { label:'Baguette',      emoji:'🥖' },
+  rye:          { label:'Roggenbrot',    emoji:'🟤' },
 };
 const SPREAD_DATA = {
-  butter:       { label:'Butter',            emoji:'🧈', container:'butter dish'       },
-  peanut_butter:{ label:'Peanut Butter',     emoji:'🥜', container:'peanut butter jar' },
-  jam:          { label:'Strawberry Jam',    emoji:'🍓', container:'jam jar'           },
-  mayo:         { label:'Mayonnaise',        emoji:'🥚', container:'mayo jar'          },
-  mustard:      { label:'Mustard',           emoji:'💛', container:'mustard jar'       },
-  cream_cheese: { label:'Cream Cheese',      emoji:'🧀', container:'cream cheese box'  },
+  butter:       { label:'Butter',           emoji:'🧈', container:'Butterdose'       },
+  peanut_butter:{ label:'Erdnussbutter',    emoji:'🥜', container:'Erdnussbutterglas' },
+  jam:          { label:'Erdbeermarmelade', emoji:'🍓', container:'Marmeladenglas'   },
+  mayo:         { label:'Mayonnaise',       emoji:'🥚', container:'Mayonnaiseglas'   },
+  mustard:      { label:'Senf',             emoji:'💛', container:'Senfglas'         },
+  cream_cheese: { label:'Frischkäse',       emoji:'🧀', container:'Frischkäsepackung'},
 };
 const FILLING_DATA = {
-  ham:     { label:'Ham',        emoji:'🥩', cuttable:false, washable:false },
-  cheese:  { label:'Cheese',     emoji:'🧀', cuttable:true,  washable:false },
-  tomato:  { label:'Tomato',     emoji:'🍅', cuttable:true,  washable:true  },
-  lettuce: { label:'Lettuce',    emoji:'🥬', cuttable:false, washable:true  },
-  cucumber:{ label:'Cucumber',   emoji:'🥒', cuttable:true,  washable:true  },
-  egg:     { label:'Boiled Egg', emoji:'🥚', cuttable:true,  washable:false },
+  ham:     { label:'Schinken',   emoji:'🥩', cuttable:false, washable:false },
+  cheese:  { label:'Käse',       emoji:'🧀', cuttable:true,  washable:false },
+  tomato:  { label:'Tomate',     emoji:'🍅', cuttable:true,  washable:true  },
+  lettuce: { label:'Salat',      emoji:'🥬', cuttable:false, washable:true  },
+  cucumber:{ label:'Gurke',      emoji:'🥒', cuttable:true,  washable:true  },
+  egg:     { label:'Gekochtes Ei',emoji:'🥚', cuttable:true,  washable:false },
   salami:  { label:'Salami',     emoji:'🍕', cuttable:false, washable:false },
-  tuna:    { label:'Tuna',       emoji:'🐟', cuttable:false, washable:false },
+  tuna:    { label:'Thunfisch',  emoji:'🐟', cuttable:false, washable:false },
 };
 const ACTIONS = [
-  { id:'wash',           emoji:'🧼', label:'Wash',            color:'#4ecdc4', twoObj:false },
-  { id:'open',           emoji:'📂', label:'Open',            color:'#45b7d1', twoObj:false },
-  { id:'close',          emoji:'📁', label:'Close',           color:'#45b7d1', twoObj:false },
-  { id:'take_out',       emoji:'🤲', label:'Take out',        color:'#96ceb4', twoObj:false },
-  { id:'put_back',       emoji:'↩️',  label:'Put back',        color:'#74b9ff', twoObj:false },
-  { id:'place',          emoji:'📍', label:'Place',           color:'#ffeaa7', twoObj:true,
-    obj1Label:'What?', obj2Label:'Where?' },
-  { id:'spread',         emoji:'🔪', label:'Spread',          color:'#fd79a8', twoObj:true,
-    obj1Label:'What to spread?', obj2Label:'On what?' },
-  { id:'cut',            emoji:'✂️',  label:'Cut',             color:'#e17055', twoObj:false },
-  { id:'add',            emoji:'➕', label:'Add to sandwich', color:'#a29bfe', twoObj:false },
-  { id:'close_sandwich', emoji:'🥪', label:'Close sandwich',  color:'#55efc4', twoObj:false },
+  { id:'wash',           emoji:'🧼', label:'Waschen',               color:'#4ecdc4', twoObj:false },
+  { id:'open',           emoji:'📂', label:'Öffnen',                color:'#45b7d1', twoObj:false },
+  { id:'close',          emoji:'📁', label:'Schließen',             color:'#45b7d1', twoObj:false },
+  { id:'take_out',       emoji:'🤲', label:'Herausnehmen',          color:'#96ceb4', twoObj:false },
+  { id:'put_back',       emoji:'↩️',  label:'Zurücklegen',           color:'#74b9ff', twoObj:false },
+  { id:'place',          emoji:'📍', label:'Legen',                 color:'#ffeaa7', twoObj:true,
+    obj1Label:'Was?', obj2Label:'Wohin?' },
+  { id:'spread',         emoji:'🔪', label:'Verstreichen',          color:'#fd79a8', twoObj:true,
+    obj1Label:'Was aufstreichen?', obj2Label:'Worauf?' },
+  { id:'cut',            emoji:'✂️',  label:'Schneiden',             color:'#e17055', twoObj:false },
+  { id:'add',            emoji:'➕', label:'Zum Sandwich hinzufügen',color:'#a29bfe', twoObj:false },
+  { id:'close_sandwich', emoji:'🥪', label:'Sandwich schließen',    color:'#55efc4', twoObj:false },
 ];
 
 // ═══════════════════════════════════════════════════════════════════════
@@ -744,7 +744,7 @@ function renderPage5() {
   // Render the completed algorithm as a formatted list
   const list = document.getElementById('pg5-algo');
   if (state.instructions.length === 0) {
-    list.innerHTML = '<p style="color:var(--text-dim);font-size:.9rem">No steps recorded.</p>';
+    list.innerHTML = '<p style="color:var(--text-dim);font-size:.9rem">Keine Schritte aufgezeichnet.</p>';
   } else {
     list.innerHTML = state.instructions.map((ins, i) => {
       const a = getActionData(ins.actionId);
@@ -784,7 +784,7 @@ function goPage(n) {
 }
 
 function updateProgress() {
-  const labels = ['Find Alien','Go Home','Pick Sandwich','Write Algorithm','Eat! 🎉'];
+  const labels = ['Finde Alien','Nach Hause','Sandwich','Algorithmus','Essen! 🎉'];
   const wrap = document.getElementById('progress-wrap');
   wrap.innerHTML = '';
   for (let i = 1; i <= 5; i++) {
@@ -882,13 +882,13 @@ function updatePreview() {
   const layers = document.getElementById('sw-layers');
   layers.innerHTML = '';
   if (!bread && spreads.length === 0 && fillings.length === 0) {
-    layers.innerHTML = '<p class="sw-empty">Nothing yet!</p>'; return;
+    layers.innerHTML = '<p class="sw-empty">Noch nichts!</p>'; return;
   }
   const b = BREAD_DATA[bread];
-  if (b) addLayer(layers, b.emoji, b.label + ' (top slice)', '#9b8f6e');
+  if (b) addLayer(layers, b.emoji, b.label + ' (obere Scheibe)', '#9b8f6e');
   spreads.forEach(s  => { const d=SPREAD_DATA[s];   if(d) addLayer(layers, d.emoji, d.label, '#a18c6a'); });
   fillings.forEach(f => { const d=FILLING_DATA[f];  if(d) addLayer(layers, d.emoji, d.label, '#7a9e7e'); });
-  if (b) addLayer(layers, b.emoji, b.label + ' (bottom slice)', '#9b8f6e');
+  if (b) addLayer(layers, b.emoji, b.label + ' (untere Scheibe)', '#9b8f6e');
   checkPage3Ready();
 }
 function addLayer(container, emoji, label, bg) {
@@ -913,21 +913,21 @@ function getActionData(id) { return ACTIONS.find(a => a.id === id) || {}; }
 function getObjectsFor(actionId) {
   const { bread, spreads, fillings } = state.sandwich;
   const b = BREAD_DATA[bread];
-  const breadLabel  = b ? b.label : 'Bread';
+  const breadLabel  = b ? b.label : 'Brot';
   const spreadObjs  = spreads.map(s  => { const d=SPREAD_DATA[s];   return d ? `${d.emoji} ${d.label}` : s; });
   const fillingObjs = fillings.map(f => { const d=FILLING_DATA[f];  return d ? `${d.emoji} ${d.label}` : f; });
   const cuttable    = fillings.filter(f => FILLING_DATA[f]?.cuttable).map(f => { const d=FILLING_DATA[f]; return `${d.emoji} ${d.label}`; });
   const washable    = fillings.filter(f => FILLING_DATA[f]?.washable).map(f => { const d=FILLING_DATA[f]; return `${d.emoji} ${d.label}`; });
   const containers  = state.sandwich.spreads.map(s => `🫙 ${SPREAD_DATA[s]?.container}`).filter(x => !x.includes('undefined'));
   switch (actionId) {
-    case 'wash':          return { obj1:['👐 hands', ...washable], obj2:[] };
-    case 'open':          return { obj1:['🧊 fridge', `🍞 ${breadLabel} bag`, ...containers], obj2:[] };
-    case 'close':         return { obj1:['🧊 fridge', `🍞 ${breadLabel} bag`, ...containers], obj2:[] };
-    case 'take_out':      return { obj1:['🍽️ plate','🔪 knife',`🍞 ${breadLabel} slice`,...spreadObjs,...fillingObjs], obj2:[] };
-    case 'put_back':      return { obj1:[...spreadObjs,...fillingObjs,'🍽️ plate','🔪 knife'], obj2:[] };
-    case 'place':         return { obj1:[`🍞 ${breadLabel} slice`,...fillingObjs], obj2:['🍽️ on the plate','🍞 on the bread slice','🥪 on top of sandwich'] };
-    case 'spread':        return { obj1:spreadObjs, obj2:[`🍞 on the ${breadLabel}`,'🍞 on the bread slice'] };
-    case 'cut':           return { obj1:[...cuttable,'🥪 sandwich in half'], obj2:[] };
+    case 'wash':          return { obj1:['👐 Hände', ...washable], obj2:[] };
+    case 'open':          return { obj1:['🧊 Kühlschrank', `🍞 ${breadLabel}-Tüte`, ...containers], obj2:[] };
+    case 'close':         return { obj1:['🧊 Kühlschrank', `🍞 ${breadLabel}-Tüte`, ...containers], obj2:[] };
+    case 'take_out':      return { obj1:['🍽️ Teller','🔪 Buttermesser',`🍞 ${breadLabel}-Scheibe`,...spreadObjs,...fillingObjs], obj2:[] };
+    case 'put_back':      return { obj1:[...spreadObjs,...fillingObjs,'🍽️ Teller','🔪 Buttermesser'], obj2:[] };
+    case 'place':         return { obj1:[`🍞 ${breadLabel}-Scheibe`,...fillingObjs], obj2:['🍽️ auf den Teller','🍞 auf die Brotscheibe','🥪 oben auf das Sandwich'] };
+    case 'spread':        return { obj1:spreadObjs, obj2:[`🍞 auf das ${breadLabel}`,'🍞 auf die Brotscheibe'] };
+    case 'cut':           return { obj1:[...cuttable,'🥪 Sandwich in der Mitte'], obj2:[] };
     case 'add':           return { obj1:fillingObjs, obj2:[] };
     case 'close_sandwich':return { obj1:[], obj2:[] };
     default:              return { obj1:[], obj2:[] };
@@ -943,7 +943,7 @@ function openModal(insertAfter, editId) {
   modalAction = null;
   const addBtn = document.getElementById('modal-add-btn');
   addBtn.disabled = true;
-  addBtn.textContent = editId ? 'Update step ✓' : 'Add this step ✓';
+  addBtn.textContent = editId ? 'Schritt aktualisieren ✓' : 'Schritt hinzufügen ✓';
 
   const grid = document.getElementById('action-grid');
   grid.innerHTML = '';
@@ -954,7 +954,7 @@ function openModal(insertAfter, editId) {
     btn.className = 'abt';
     btn.dataset.id = a.id;
     btn.innerHTML = `<span class="ai">${a.emoji}</span><span class="al">${a.label}</span>`;
-    if (!hasObjs) { btn.style.opacity='.35'; btn.style.cursor='not-allowed'; btn.title='No items available'; return; }
+    if (!hasObjs) { btn.style.opacity='.35'; btn.style.cursor='not-allowed'; btn.title='Keine Objekte verfügbar'; return; }
     btn.onclick = () => selectAction(a.id);
     grid.appendChild(btn);
   });
@@ -978,7 +978,7 @@ function selectAction(actionId, prefillObj1, prefillObj2) {
   area.innerHTML = '';
   if (actionId === 'close_sandwich') {
     area.style.display = 'block';
-    area.innerHTML = `<p style="color:var(--teal);font-size:.9rem;margin-top:8px">✅ Places the top slice of bread on the sandwich. No extra choices needed!</p>`;
+    area.innerHTML = `<p style="color:var(--teal);font-size:.9rem;margin-top:8px">✅ Legt die obere Brotscheibe auf das Sandwich. Keine weitere Auswahl nötig!</p>`;
     document.getElementById('modal-add-btn').disabled = false;
     return;
   }
@@ -986,21 +986,21 @@ function selectAction(actionId, prefillObj1, prefillObj2) {
   area.style.display = 'block';
   if (a.twoObj) {
     area.innerHTML = `<div class="obj-row">
-      <div class="fg"><label>${a.obj1Label||'Object 1:'}</label>
+      <div class="fg"><label>${a.obj1Label||'Objekt 1:'}</label>
         <select class="sel" id="modal-obj1" onchange="checkModalReady()">
-          <option value="">— pick one —</option>
+          <option value="">— wähle eins —</option>
           ${objs.obj1.map(o=>`<option value="${o}"${prefillObj1===o?' selected':''}>${o}</option>`).join('')}
         </select></div>
-      <div class="fg"><label>${a.obj2Label||'Object 2:'}</label>
+      <div class="fg"><label>${a.obj2Label||'Objekt 2:'}</label>
         <select class="sel" id="modal-obj2" onchange="checkModalReady()">
-          <option value="">— pick one —</option>
+          <option value="">— wähle eins —</option>
           ${objs.obj2.map(o=>`<option value="${o}"${prefillObj2===o?' selected':''}>${o}</option>`).join('')}
         </select></div>
     </div>`;
   } else {
     area.innerHTML = `<div class="fg" style="margin-top:10px"><label>${a.obj1Label||'What?'}</label>
       <select class="sel" id="modal-obj1" onchange="checkModalReady()">
-        <option value="">— pick one —</option>
+        <option value="">— wähle eins —</option>
         ${objs.obj1.map(o=>`<option value="${o}"${prefillObj1===o?' selected':''}>${o}</option>`).join('')}
       </select></div>`;
   }
@@ -1062,7 +1062,7 @@ function renderInstructions() {
   if (!list) return;
   list.innerHTML = '';
   if (state.instructions.length === 0) {
-    list.innerHTML = `<div class="empty"><div class="ei">🤔</div><p>No steps yet! Click <b>"＋ Add a step"</b> below to start.</p></div>`;
+    list.innerHTML = `<div class="empty"><div class="ei">🤔</div><p>Noch keine Schritte! Klicke unten auf <b>"＋ Schritt hinzufügen"</b>, um zu starten.</p></div>`;
     return;
   }
   list.appendChild(makeInsertRow(-1));
@@ -1077,13 +1077,13 @@ function renderInstructions() {
     if (ins.obj1) desc += ` <span class="instr-obj">${ins.obj1}</span>`;
     if (ins.obj2) desc += ` <span style="color:var(--text-dim)">→</span> <span style="color:var(--teal)">${ins.obj2}</span>`;
     card.innerHTML = `
-      <span class="drag-handle" title="Drag to reorder">⠿</span>
+      <span class="drag-handle" title="Ziehen zum Neuordnen">⠿</span>
       <span class="instr-num">${idx+1}</span>
       <span class="instr-body">${desc}</span>
       <span class="instr-controls">
-        <button class="ibt ibt-mv" onclick="moveInstr('${ins.id}',-1)" title="Move up">▲</button>
-        <button class="ibt ibt-mv" onclick="moveInstr('${ins.id}',1)"  title="Move down">▼</button>
-        <button class="ibt ibt-del" onclick="deleteInstr('${ins.id}')" title="Delete">✕</button>
+        <button class="ibt ibt-mv" onclick="moveInstr('${ins.id}',-1)" title="Nach oben bewegen">▲</button>
+        <button class="ibt ibt-mv" onclick="moveInstr('${ins.id}',1)"  title="Nach unten bewegen">▼</button>
+        <button class="ibt ibt-del" onclick="deleteInstr('${ins.id}')" title="Löschen">✕</button>
       </span>`;
     card.addEventListener('dragstart', e => { dragSrcId=ins.id; setTimeout(()=>card.classList.add('dragging'),0); e.dataTransfer.effectAllowed='move'; });
     card.addEventListener('dragend',   () => { card.classList.remove('dragging'); document.querySelectorAll('.instr-card.drag-over').forEach(c=>c.classList.remove('drag-over')); });
@@ -1108,7 +1108,7 @@ function renderInstructions() {
 function makeInsertRow(afterIdx) {
   const row = document.createElement('div');
   row.className = 'ins-row';
-  row.innerHTML = `<div class="ins-line"></div><button class="ins-btn" onclick="openModal(${afterIdx})">+ insert here</button><div class="ins-line"></div>`;
+  row.innerHTML = `<div class="ins-line"></div><button class="ins-btn" onclick="openModal(${afterIdx})">+ hier einfügen</button><div class="ins-line"></div>`;
   row.addEventListener('mouseenter', () => row.style.opacity='1');
   row.addEventListener('mouseleave', () => row.style.opacity='0');
   return row;
@@ -1133,7 +1133,7 @@ function deleteInstr(id) {
 
 function clearAll() {
   if (state.instructions.length === 0) return;
-  if (confirm('Delete all steps and start fresh?')) {
+  if (confirm('Alle Schritte löschen und neu anfangen?')) {
     state.instructions = [];
     renderInstructions();
     updateStepBadge();
@@ -1146,7 +1146,7 @@ function clearAll() {
 function updateStepBadge() {
   const n = state.instructions.length;
   const badge = document.getElementById('step-badge');
-  if (badge) badge.textContent = `📋 ${n} step${n !== 1 ? 's' : ''} written`;
+  if (badge) badge.textContent = `📋 ${n} Schritt${n !== 1 ? 'e' : ''} geschrieben`;
 }
 
 function checkPage4Ready() {
@@ -1272,7 +1272,7 @@ function restartGame() {
   document.querySelectorAll('.ms-opt.sel2').forEach(o => o.classList.remove('sel2'));
   updateMsTrigger('ms-spreads');
   updateMsTrigger('ms-fillings');
-  document.getElementById('sw-layers').innerHTML = '<p class="sw-empty">Nothing yet!</p>';
+  document.getElementById('sw-layers').innerHTML = '<p class="sw-empty">Noch nichts!</p>';
   document.getElementById('alien-name-input').value = '';
   document.getElementById('name-preview').textContent = '';
   document.getElementById('pg1-next').disabled = true;
